@@ -1,8 +1,10 @@
+#require "Graphics";;
+#require "ANSITerminal";;
 open Graphics
+
 let play_game name =
-  open_graph " 480x270"
-
-
+  open_graph " 500x500";
+  set_window_title "OCamlMon"
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
