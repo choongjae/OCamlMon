@@ -9,6 +9,7 @@ let play_game name =
   let pointx = 0 in
   let pointy = 0 in
   plot 250 250;
+  background = 55;
   (* plot 0 0; *)
   foreground = red;
   rmoveto 250 250;
@@ -19,7 +20,9 @@ let play_game name =
       let st = wait_next_event [Key_pressed;] in
       synchronize();
       if st.keypressed then
-        if st.key = 'q' then raise Exit else
+        if st.key = 'q' then raise Exit 
+        else if st.key = 'c' then clear_graph () 
+        else
           let (a,b) = current_point() in
             if st.key = 'w' then 
               moveto a (b+25);
