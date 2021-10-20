@@ -1,3 +1,4 @@
+#require "Pokemon";;
 type grass = {pokemon : pokemon; color : int}
 type sand = {pokemon : pokemon; color : int}
 type water = {pokemon : pokemon; color : int}
