@@ -2,7 +2,7 @@
 #require "ANSITerminal";;
 open Graphics
 
-
+let mainWorldlist = []
 
 let play_game name =
   open_graph " 525x525";

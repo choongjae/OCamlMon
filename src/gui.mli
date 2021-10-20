@@ -1,2 +1,0 @@
-type grid_square
-
