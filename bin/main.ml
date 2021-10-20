@@ -1,8 +1,41 @@
-(* Use [utop -init bin/main.ml] to run (while in main directory) *)
+(* Use [ocaml bin/main.ml] to run as script (while in root directory) *)
+#use "topfind";;
 #require "Graphics";;
 #require "ANSITerminal";;
 open Graphics
 let mainWorldlist = []
+
+
+(** Primitive prototype of making the player sprite *)
+let player = 
+  (*   1     2       3       4     5       6     7       8      9      10    11    12    13(m)   14      15     16     17     18    19    20      21     22     23     24     25 *)
+  [|
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;black;transp;transp;transp;black;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;black;transp;transp;transp;black;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;black;transp;transp;transp;black;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;black;transp;transp;transp;transp;transp;transp;transp;black;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;black;transp;transp;transp;transp;transp;black;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;black;black;black;black;black;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|];
+  [|transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp;transp|]
+  |]
 
 (** [draw_square (x, y) f b] draws a 25x25 pixel square with the bottom-left
 corner at [(x, y)], with a fill color [f] and border color [b]. *)
@@ -17,11 +50,12 @@ end
 [(x, v)] to [(u, v)]. Note that these coordinates correspond to the bottom-left
 corner of the grid square that the character is on. We also use auto_synchronize
 to batch the operations of filling in the old/new squares. *)
-let move (xinit, yinit) (xlast, ylast) = begin
+let move (xinit, yinit) (xlast, ylast) sprite = begin
   moveto xlast ylast;
   auto_synchronize false;
-  draw_square xlast ylast black black;
-  draw_square xinit yinit green black;
+  (* draw_square (xlast, ylast) black black; *)
+  draw_image sprite xlast ylast;
+  draw_square (xinit, yinit) green black;
   auto_synchronize true;
   (* synchronize(); *)
 end
@@ -35,31 +69,35 @@ let play_game name =
 
   for x = 0 to 21 do
     for y = 0 to 21 do
-      draw_square (x*25) (y*25) green black
+      draw_square ((x*25), (y*25)) green black
     done;
   done;
 
-  moveto 250 250;
-  try
-    while true do
-      let st = wait_next_event [Key_pressed;] in
-      if st.keypressed then
-        if st.key = 'q' then raise Exit else
-        if st.key = 'c' then clear_graph () else
-          let (a,b) = current_point() in
-            match st.key with
-            | 'w' -> move (a, b) (a, b+25);
-            | 'a' -> move (a, b) (a-25, b);
-            | 's' -> move (a, b) (a, b-25);
-            | 'd' -> move (a, b) (a+25, b);
-            | _ -> ();
-    done
-  with Exit -> close_graph; ()
+  let player_sprite = make_image player in
+    moveto 250 250;
+    draw_image player_sprite 250 250;
+    (* draw_square (250, 250) black black; *)
+    (* draw_string "P"; *)
+    try
+      while true do
+        let st = wait_next_event [Key_pressed;] in
+        if st.keypressed then
+          if st.key = 'q' then raise Exit else
+          if st.key = 'c' then clear_graph () else
+            let (a,b) = current_point() in
+              match st.key with
+              | 'w' -> move (a, b) (a, b+25) player_sprite;
+              | 'a' -> move (a, b) (a-25, b) player_sprite;
+              | 's' -> move (a, b) (a, b-25) player_sprite;
+              | 'd' -> move (a, b) (a+25, b) player_sprite;
+              | _ -> ();
+      done
+    with Exit -> close_graph ()
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
   ANSITerminal.print_string [ ANSITerminal.red ]
-    "\n\nWelcome to the world of OCámlMon! \n";
+    "\nWelcome to the world of OCámlMon! \n";
   print_endline
     "Please enter your name: ";
   print_string "> ";
