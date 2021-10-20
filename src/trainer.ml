@@ -1,1 +1,1 @@
-type trainer = {pokemon : pokemon list; level : int; gender : String}
+type trainer = {level : int; gender : string}

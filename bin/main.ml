@@ -1,8 +1,14 @@
 #require "Graphics";;
 #require "ANSITerminal";;
 open Graphics
-
 let mainWorldlist = []
+
+let draw_square x y = begin
+  set_color green;
+  fill_rect x y 25 25;
+  set_color black;
+  draw_rect x y 25 25;
+end
 
 let play_game name =
   open_graph " 525x525";
@@ -11,10 +17,7 @@ let play_game name =
 
   for x = 0 to 21 do
     for y = 0 to 21 do
-      set_color green;
-      fill_rect (x*25) (y*25) 25 25;
-      set_color black;
-      draw_rect (x*25) (y*25) 25 25;
+      draw_square (x*25) (y*25)
     done;
   done;
 
@@ -42,6 +45,10 @@ let play_game name =
             if st.key = 'd' then
               moveto (a+25) (b);
             let (a,b) = current_point() in
+              draw_square (a-25) (b);
+              draw_square (a+25) (b);
+              draw_square (a) (b-25);
+              draw_square (a) (b+25);
               draw_rect (a) (b) 25 25;
               fill_rect (a) (b) 25 25;
     done
