@@ -53,90 +53,49 @@ let draw_main_exits _ = begin
   fill_rect 510 100 15 25;
 end
 
-(*draws the exits for bottom room*)
-let draw_bot_exits _ = begin
+(*abstraction: draws the exit we want at the specific coordinates*)
+let draw_exits tl tr bl br = begin
   set_color red;
-  fill_rect 250 510 25 15;
+  fill_rect tl tr bl br;
 end
+(*draws the exits for bottom room*)
+let draw_bot_exits _ = draw_exits 250 510 25 15
 
 (*draws the exits for left room*)
-let draw_left_exits _ = begin
-  set_color red;
-  fill_rect 0 100 15 25;
-end
+let draw_left_exits _ = draw_exits 0 100 15 25
 
 (*draws the exits for right room*)
-let draw_right_exits _ = begin
-  set_color red;
-  fill_rect 510 100 15 25;
-end
+let draw_right_exits _ = draw_exits 510 100 15 25
+let touch_bot_exit (xpos, ypos) = (xpos = 250 && ypos < 0) 
 
-let touch_bot_exit (xpos, ypos) = begin
-  if xpos = 250 && ypos < 0 then true else false
-end
+let touch_left_exit(xpos, ypos) = (xpos < 0 && ypos = 400)
 
-let touch_left_exit(xpos, ypos) = begin
-  if xpos < 0 && ypos = 400 then true else false
-end
+let touch_right_exit(xpos, ypos) = (xpos > 510 && ypos = 100)
 
-let touch_right_exit(xpos, ypos) = begin
-  if xpos > 510 && ypos = 100 then true else false
-end
-
-let draw_home _ = begin
+let draw_main a b f = begin
   for x = 0 to 21 do
     for y = 0 to 21 do
-      draw_square ((x*25), (y*25)) green black
+      draw_square ((x*25), (y*25)) a b
     done;
   done;
-  draw_main_exits ();
+  f ();
+end
+let draw_home _ = draw_main green black draw_main_exits 
+let draw_bot _ = draw_main blue black draw_bot_exits
+let draw_left _ = draw_main blue black draw_left_exits 
+let draw_right _ = draw_main blue black draw_right_exits 
+
+let react_touch sprite x y f= begin
+  f ();
+  moveto x y;
+  draw_image sprite x y;
 end
 
-let draw_bot _ = begin
-  for x = 0 to 21 do
-    for y = 0 to 21 do
-      draw_square ((x*25), (y*25)) blue black
-    done;
-  done;
-  draw_bot_exits ();
-end
+let react_touch_bot sprite = react_touch sprite 250 500 draw_bot 
 
-let draw_left _ = begin
-  for x = 0 to 21 do
-    for y = 0 to 21 do
-      draw_square ((x*25), (y*25)) blue black
-    done;
-  done;
-  draw_left_exits ();
-end
+let react_touch_left sprite = react_touch sprite 500 400 draw_left 
 
-let draw_right _ = begin
-  for x = 0 to 21 do
-    for y = 0 to 21 do
-      draw_square ((x*25), (y*25)) blue black
-    done;
-  done;
-  draw_right_exits ();
-end
-
-let react_touch_bot sprite = begin
-  draw_bot ();
-  moveto 250 500;
-  draw_image sprite 250 500;
-end
-
-let react_touch_left sprite = begin
-  draw_left ();
-  moveto 500 400;
-  draw_image sprite 500 400;
-end
-
-let react_touch_right sprite = begin
-  draw_right ();
-  moveto 0 100;
-  draw_image sprite 0 100;
-end
-
+let react_touch_right sprite = react_touch sprite 0 100 draw_right 
 
 (** [move (x, y) (u, v)] moves the character from its initial position of 
 [(x, v)] to [(u, v)]. Note that these coordinates correspond to the bottom-left
