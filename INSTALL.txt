@@ -8,4 +8,6 @@
    Windows: download XMing
    Mac: download XQuartz (and restart laptop after)s
 
-4. Run ocaml bin/main.ml
+4. Run "make build"
+
+5. Run "make play" to begin simulation
