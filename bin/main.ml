@@ -1,6 +1,6 @@
 (* Use [ocaml bin/main.ml] to run as script (while in root directory) *)
 #use "topfind";;
-#require "Graphics";;
+#require "graphics";;
 #require "ANSITerminal";;
 open Graphics
 let mainWorldlist = []
