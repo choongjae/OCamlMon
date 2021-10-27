@@ -5,6 +5,7 @@
 open Graphics
 let mainWorldlist = []
 
+(*hi im sab*)
 (*NEED STATE TO KEEP TRACK OF ROOMS*)
 (** Primitive prototype of making the player sprite *)
 let player = 
