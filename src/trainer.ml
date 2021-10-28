@@ -1,2 +1,3 @@
 open Tile
-type trainer = {level : int; gender : string; pastTile : tile; current_room : room}
+open Room
+type trainer = {level : int; gender : string; pastTile : tile; state : room}
