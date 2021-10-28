@@ -25,7 +25,7 @@ let exit_to_room e = {name = ""; layout = [|[||]|]; exits = []}
 
 let forest_exit = {name = "forest"; coordinates = (250, 525)}
 let town_exit = {name = "town"; coordinates = (-25, 250)}
-let hometown_layout =
+let home_layout =
   [|
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
@@ -49,11 +49,84 @@ let hometown_layout =
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
   |]
+
+
+let forest_layout =
+  [|
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+  [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+|]
+
+let town_layout =
+  [|
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+|]
 let hometown = {
-  name = "hometown";
-  layout = hometown_layout;
+  name = "home";
+  layout = home_layout;
   exits = [
     forest_exit;
     town_exit;
     ];
 }
+
+let forest = {
+  name = "forest";
+  layout = forest_layout;
+  exits = [
+    {name = "town"; coordinates = (250, -25)};
+  ];
+}
+
+let town = {
+  name = "town";
+  layout = town_layout;
+  exits = [
+    {name = "town"; coordinates = (525, 250)};
+  ]
+}
+
+let room_layout = function
+| "home" -> hometown.layout
+| "forest" -> forest.layout
+| "town" -> town.layout
+| _ -> failwith "No"
