@@ -113,7 +113,7 @@ let forest = {
   name = "forest";
   layout = forest_layout;
   exits = [
-    {name = "town"; coordinates = (250, -25)};
+    {name = "home"; coordinates = (250, -25)};
   ];
 }
 
@@ -121,7 +121,7 @@ let town = {
   name = "town";
   layout = town_layout;
   exits = [
-    {name = "town"; coordinates = (525, 250)};
+    {name = "home"; coordinates = (525, 250)};
   ]
 }
 
@@ -129,4 +129,12 @@ let room_layout = function
 | "home" -> hometown.layout
 | "forest" -> forest.layout
 | "town" -> town.layout
+| _ -> failwith "No"
+
+let get_tile coord room_name = (room_layout room_name).((fst coord)/25).((snd coord)/25)
+
+let string_to_room = function
+| "home" -> hometown
+| "forest" -> forest
+| "town" -> town
 | _ -> failwith "No"

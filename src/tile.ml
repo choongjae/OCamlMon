@@ -29,3 +29,11 @@ let generate_pokemon 0 = {
   };
 }
 (** TODO *)
+
+let get_color = function
+| Grass t -> t.color
+| Sand t -> t.color
+| Water t -> t.color
+| Bushes t -> t.color
+| Rocks t -> t.color
+| Path t -> t.color

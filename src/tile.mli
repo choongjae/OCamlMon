@@ -22,5 +22,6 @@ the pokemon within the list
   NOTE: Planning to use conditionals and define ranges for rarity within
   this method. *)
 
+val get_color : tile -> color
 
 
