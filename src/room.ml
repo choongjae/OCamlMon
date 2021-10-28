@@ -1,17 +1,16 @@
-(* open Tile
+open Tile
 type exit_names = string
 type room_id = string
 type exit = {
-  room_id : room_id
+  name : string;
+  coordinates : int * int;
 }
 
 type room = {
-  id : room_id;
-  tiles : tile list;
+  name : string;
+  layout : tile array array;
   exits : exit list;
 }
 
-type t = {
-  rooms : room list;
-  start_room : room_id
-} *)
+let exit_to_room e = {name = ""; layout = [|[||]|]; exits = []}
+(**TODO*)
