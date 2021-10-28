@@ -8,3 +8,9 @@ type t = {
 let get_current_room state = ""
 let get_current_coord state = (0,0)
 let get_action state = Talk
+
+let init_state = {
+  current_room = "home";
+  current_coord = (250,250);
+  current_action = Walk;
+}
