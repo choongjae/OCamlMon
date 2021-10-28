@@ -1,4 +1,4 @@
-open Tile
+(* open Tile
 type exit_names = string
 type room_id = string
 type exit = {
@@ -14,4 +14,4 @@ type room = {
 type t = {
   rooms : room list;
   start_room : room_id
-}
+} *)

@@ -1,2 +1,2 @@
-val exit_names : string
-val room_id : string
+(* val exit_names : string
+val room_id : string *)
