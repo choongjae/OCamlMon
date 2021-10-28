@@ -7,8 +7,6 @@ open Tile
 let mainWorldlist = []
 
 (*hi im sab*)
-(*NEED STATE TO KEEP TRACK OF ROOMS*)
-(** Primitive prototype of making the player sprite *)
 let player = 
   (*  1       2       3       4       5       6       7       8       9       10       11      12    13(m)    14      15      16      17      18      19      20      21      22      23      24     25 *)
   [|
@@ -85,12 +83,10 @@ let move room (xinit, yinit) (xlast, ylast) sprite fill = begin
     draw_square (xinit, yinit) fill black;
     auto_synchronize true;
     let new_room = stay_or_exit room (xlast, ylast) in
-    (*update room, coord, and action before constructin new state*)
     let new_coord = 
       (if new_room = room then (xlast, ylast) else get_exit_start_pos (xlast, ylast))
       in 
-    update_state new_room new_coord Walk (*this needs to be updated based on actions*)
-    (* synchronize(); *))
+    update_state new_room new_coord Walk (*this needs to be updated based on actions*))
   else
     update_state room (xinit, yinit) Walk
 end
@@ -116,8 +112,7 @@ let rec play curr_state =
     (* draw_square (250, 250) black black; *)
     (* draw_string "P"; *)
     try
-      while true do
-        let st = wait_next_event [Key_pressed;] in
+      let st = wait_next_event [Key_pressed;] in
         if st.keypressed then
           if st.key = 'q' then raise Exit else
           if st.key = 'c' then clear_graph () else
@@ -128,10 +123,10 @@ let rec play curr_state =
               | 'w' -> let next = move (get_current_room curr_state) (a, b) (a, b+25) player_sprite pad_color in play next;
               | 'a' -> let next = move (get_current_room curr_state) (a, b) (a-25, b) player_sprite pad_color in play next;
               | 's' -> let next = move (get_current_room curr_state) (a, b) (a, b-25) player_sprite pad_color in play next;
-              | 'd' -> let next = move (get_current_room curr_state) (a, b) (a+25, b) player_sprite pad_color in play next; (*have to find way to modularize to get correct fill based on room*)
+              | 'd' -> let next = move (get_current_room curr_state) (a, b) (a+25, b) player_sprite pad_color in play next;
               | _ -> ();
-      done
-    with Exit -> close_graph ()
+    with 
+    | Exit | Graphic_failure("fatal I/O error") -> close_graph ()
 
 (** [play_game n] begins running the main game loop with the [n] customization
 details that the user provided. *)
