@@ -17,3 +17,5 @@ val exit_to_room : exit -> room
 (* val get_tile : (int * int) -> string -> tile *)
 (**Gets the tile of the room to draw over the tile after 
 moving to a new tile*)
+
+val room_layout : string -> tile array array
