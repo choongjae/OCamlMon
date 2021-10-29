@@ -1,6 +1,8 @@
-type p = Bulbasaur | Squirtle | Caterpie | Camelo | Sandshrew | Geodude | O
+type p = Bulbasaur | Squirtle | Caterpie | Sandshrew | Geodude | O
 
-type pmove = Tackle | KarateChop
+type pmove = Tackle | VineWhip | RazorLeaf | SolarBeam | WaterGun | WaterPulse
+| HydroPump | Bugbite | StringShot | SandAttack | GyroBall | SandStorm | RockThrow 
+|Earthquake | Explosion |Encapsulate | Abstract | RaiseFail
 
 type pokemon_stats = {
   level : int;
