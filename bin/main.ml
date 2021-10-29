@@ -46,11 +46,11 @@ let draw_square (x, y) fill border = begin
   draw_rect x y 25 25;
 end
 
-let rec is_exit room (x,y) = function
+let rec is_exit (x,y) = function
 | [] -> false
 | h :: t -> 
   if (x == fst(h.coordinates) && y == snd(h.coordinates)) then true
-  else is_exit room (x,y) t
+  else is_exit (x,y) t
 
 let rec helper room (x,y) = function
 | [] -> room
@@ -76,7 +76,7 @@ end
 corner of the grid square that the character is on. We also use auto_synchronize
 to batch the operations of filling in the old/new squares. *)
 let move room (xinit, yinit) (xlast, ylast) sprite fill = begin
-  if is_exit room (xlast, ylast) (string_to_room room).exits || (xlast >= 0 && ylast >= 0 && xlast <=500 && ylast <= 500) then
+  if is_exit (xlast, ylast) (string_to_room room).exits || (xlast >= 0 && ylast >= 0 && xlast <=500 && ylast <= 500) then
     (moveto xlast ylast;
     auto_synchronize false;
     draw_image sprite xlast ylast;

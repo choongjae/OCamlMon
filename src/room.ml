@@ -125,6 +125,12 @@ let town = {
   ]
 }
 
+let forest2 = {
+  name = "forest 2";
+  layout = forest_layout;
+  exits = [{name = "town"; coordinates = (250, -25)}]
+}
+
 let room_layout = function
 | "home" -> hometown.layout
 | "forest" -> forest.layout

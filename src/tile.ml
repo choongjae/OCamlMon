@@ -1,7 +1,7 @@
 open Pokemon
-type color = int
+(* type color = int *)
 
-type t = {color: color; encounters: p list}
+type t = {color: int; encounters: p list}
 
 type tile = | Grass of t
             | Sand of t
@@ -15,20 +15,50 @@ let water = Water {color = 0x3498db; encounters = [Squirtle]}
 let bushes = Bushes {color = 0x8e8e93; encounters =  [Bulbasaur]}
 let rocks = Rocks {color = 0xffeb3b; encounters =  [Geodude]}
 let path = Path {color = 0xffbd66; encounters = []}
+(**Generates a random number*)
+let generate_randomNum x = Random.int 11
 
-let generate_encounter 0 = true
-(** TODO *)
+(*Determines whether an encounter happens based on the random num generator*)
+let generate_encounter () = if generate_randomNum () > 7 then true else false
 
-let generate_pokemon 0 = {
-  name = "Pokemon";
-  t_poke = Bulbasaur;
-  moves = [Tackle];
+(**generates a random pokemon tuple based on the tile*)
+let type_pokemon = function 
+    |Grass _-> if generate_randomNum () < 8 then (Caterpie,poke_to_string Caterpie) else (Bulbasaur, poke_to_string Bulbasaur)
+    |Sand _-> if generate_randomNum () < 9 then (Sandshrew, poke_to_string Sandshrew) else (O, poke_to_string O)
+    |Water _-> (Squirtle, poke_to_string Squirtle)
+    |Bushes _->(Bulbasaur, poke_to_string Bulbasaur)
+    |Rocks _-> (Geodude, poke_to_string Geodude)
+    
+(**Generates a random moves based on the pokemon move list*)
+let random_move l = List.nth l (Random.int (List.length l))
+(**Generates a list of pokemon moves*)
+let rec num_moves n l acc = match n with 
+  0 -> acc
+  |x -> num_moves (n-1) l ((random_move l) :: acc)
+  (**generates the list of moves the pokemon has*)
+let generate_move level = function
+|Bulbasaur -> if level < 3 then [Tackle] else if level < 7 then num_moves 2 bulb_moves [] else if 
+                  level < 9 then num_moves 3 bulb_moves [] else bulb_moves
+|Squirtle -> if level < 3 then [Tackle] else if level < 7 then num_moves 2 squirtle_moves [] else if 
+                  level < 9 then num_moves 3 squirtle_moves [] else squirtle_moves
+|O -> if level < 5 then num_moves 1 o_moves [] else if level < 9 then num_moves 2 o_moves [] else o_moves
+|Caterpie -> if level < 5 then [Tackle] else if level < 8 then num_moves 2 caterpie_moves [] else caterpie_moves
+|Sandshrew -> if level < 3 then [Tackle] else if level < 7 then num_moves 2 sand_moves [] else if 
+                  level < 9 then num_moves 3 sand_moves [] else sand_moves
+|Geodude -> if level < 3 then [Tackle] else if level < 7 then num_moves 2 geodude_moves [] else if 
+                  level < 9 then num_moves 3 geodude_moves [] else geodude_moves
+(**Generates the random pokemon*)
+let generate_pokemon tileT = let typeP = type_pokemon tileT in let l = generate_randomNum () in 
+let move_list = generate_move l (fst typeP) in
+{
+  name = snd typeP;
+  t_poke = fst typeP;
+  moves = move_list;
   stats = {
-    level = 5;
-    xp = 0
+    level = l;
+    xp = (l*10)
   };
 }
-(** TODO *)
 
 let get_color = function
 | Grass t -> t.color
