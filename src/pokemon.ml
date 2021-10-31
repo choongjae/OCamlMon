@@ -1,5 +1,6 @@
 type p = Bulbasaur | Squirtle | Caterpie | Sandshrew | Geodude | O
 
+
 type pmove = Tackle | VineWhip | RazorLeaf | SolarBeam | WaterGun | WaterPulse
 | HydroPump | Bugbite | StringShot | SandAttack | GyroBall | SandStorm | RockThrow 
 |Earthquake | Explosion |Encapsulate | Abstract | RaiseFail
@@ -19,6 +20,12 @@ type pokemon = {
   moves : pmove list;
   stats : pokemon_stats;
 }
+let pokemonEx = {
+                name = "blah";
+                t_poke = Squirtle;
+                moves = [Tackle];
+                stats = {level = 5; xp = 50}
+              }
 let poke_to_string = function
 | Bulbasaur -> "Bulbasaur"
 | Squirtle -> "Squirtle"

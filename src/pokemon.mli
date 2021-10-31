@@ -9,7 +9,6 @@ val caterpie_moves : pmove list
 val sand_moves : pmove list
 val geodude_moves : pmove list
 val o_moves : pmove list
-
 type pokemon_stats = {
   level : int;
   xp : int
@@ -21,7 +20,6 @@ type pokemon = {
   moves : pmove list;
   stats : pokemon_stats;
 }
-
 val poke_to_string : p -> string
 
 val pmove_to_string : pmove -> string

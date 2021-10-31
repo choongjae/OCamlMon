@@ -120,7 +120,10 @@ let rec play curr_state =
               (* print_endline(string_of_int b); *)
               let pad_color = get_color (get_tile (a,b) (get_current_room curr_state)) in
               match st.key with
-              | 'w' -> let next = move (get_current_room curr_state) (a, b) (a, b+25) player_sprite pad_color in play next;
+              | 'w' -> let next = move (get_current_room curr_state) (a, b) (a, b+25) player_sprite pad_color 
+              in let curr_room = get_current_room next in let curr_tile = get_tile (get_current_coord next) curr_room in 
+              (* (match curr_tile with Path _ -> () | _ -> (match generate_pokemon curr_tile with Some poke -> (print_endline poke.name))); *)
+              print_endline (get_color_string curr_tile) ;play next;
               | 'a' -> let next = move (get_current_room curr_state) (a, b) (a-25, b) player_sprite pad_color in play next;
               | 's' -> let next = move (get_current_room curr_state) (a, b) (a, b-25) player_sprite pad_color in play next;
               | 'd' -> let next = move (get_current_room curr_state) (a, b) (a+25, b) player_sprite pad_color in play next;
@@ -131,7 +134,7 @@ let rec play curr_state =
 (** [play_game n] begins running the main game loop with the [n] customization
 details that the user provided. *)
 let play_game name =
-  open_graph " 525x525";
+  open_graph " 600x600";
   set_window_title "OCamlMon";
   (* set_color green; *)
   let curr_state = init_state in

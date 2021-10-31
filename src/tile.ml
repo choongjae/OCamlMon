@@ -19,16 +19,16 @@ let path = Path {color = 0xffbd66; encounters = []}
 let generate_randomNum x = Random.int 11
 
 (*Determines whether an encounter happens based on the random num generator*)
-let generate_encounter () = if generate_randomNum () > 7 then true else false
+let generate_encounter () = if generate_randomNum () > 8 then true else false
 
 (**generates a random pokemon tuple based on the tile*)
 let type_pokemon = function 
-    |Grass _-> if generate_randomNum () < 8 then (Caterpie,poke_to_string Caterpie) else (Bulbasaur, poke_to_string Bulbasaur)
-    |Sand _-> if generate_randomNum () < 9 then (Sandshrew, poke_to_string Sandshrew) else (O, poke_to_string O)
-    |Water _-> (Squirtle, poke_to_string Squirtle)
-    |Bushes _->(Bulbasaur, poke_to_string Bulbasaur)
-    |Rocks _-> (Geodude, poke_to_string Geodude)
-    
+    |Grass _-> if generate_randomNum () < 8 then (Some (Caterpie,poke_to_string Caterpie)) else Some (Bulbasaur, poke_to_string Bulbasaur)
+    |Sand _-> if generate_randomNum () < 9 then Some (Sandshrew, poke_to_string Sandshrew) else Some (O, poke_to_string O)
+    |Water _-> Some (Squirtle, poke_to_string Squirtle)
+    |Bushes _-> Some (Bulbasaur, poke_to_string Bulbasaur)
+    |Rocks _-> Some (Geodude, poke_to_string Geodude)
+    |Path _ -> None
 (**Generates a random moves based on the pokemon move list*)
 let random_move l = List.nth l (Random.int (List.length l))
 (**Generates a list of pokemon moves*)
@@ -47,19 +47,30 @@ let generate_move level = function
                   level < 9 then num_moves 3 sand_moves [] else sand_moves
 |Geodude -> if level < 3 then [Tackle] else if level < 7 then num_moves 2 geodude_moves [] else if 
                   level < 9 then num_moves 3 geodude_moves [] else geodude_moves
-(**Generates the random pokemon*)
-let generate_pokemon tileT = let typeP = type_pokemon tileT in let l = generate_randomNum () in 
-let move_list = generate_move l (fst typeP) in
-{
-  name = snd typeP;
-  t_poke = fst typeP;
-  moves = move_list;
-  stats = {
-    level = l;
-    xp = (l*10)
-  };
-}
+let extract = function
+|Some x -> x
 
+(**Generates the random pokemon*)
+let generate_pokemon tileT = match tileT with 
+Path _ -> None 
+|_ -> Some (let typeP = type_pokemon tileT in let l = generate_randomNum () in 
+  let move_list = generate_move l (fst (extract typeP)) in
+  {
+    name = snd (extract typeP);
+    t_poke = fst (extract typeP);
+    moves = move_list;
+    stats = {
+      level = l;
+      xp = ((l*10) + Random.int 10)
+    };
+  })
+let get_color_string = function
+| Grass t -> "Grass"
+| Sand t -> "Sand"
+| Water t -> "Water"
+| Bushes t -> "Bushes"
+| Rocks t -> "Rocks"
+| Path t -> "Path"
 let get_color = function
 | Grass t -> t.color
 | Sand t -> t.color

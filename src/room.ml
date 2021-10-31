@@ -32,8 +32,8 @@ let home_layout =
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
-    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
-    [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;water;water;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
+    [|grass;grass;grass;grass;grass;grass;grass;grass;water;water;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;path;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];

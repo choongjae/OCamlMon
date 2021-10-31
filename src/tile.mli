@@ -12,7 +12,7 @@ val generate_encounter : unit -> bool
 (** [generate_encounter x] is whether or not stepping on a tile will create a
 random encounter based on a generated random number *)
 
-val generate_pokemon : tile -> pokemon
+val generate_pokemon : tile -> pokemon option
 (** [generate_pokemon n] is the pokemon that is generated based on the random number generated and the tile
 that the trainer is currently on, taking into account the tile's encounters list and the rarity of
 the pokemon within the list
@@ -20,3 +20,4 @@ the pokemon within the list
   this method. *)
 
 val get_color : tile -> int
+val get_color_string : tile -> string
