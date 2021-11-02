@@ -36,6 +36,7 @@ let rec num_moves n l acc = match n with
   0 -> acc
   |x -> num_moves (n-1) l ((random_move l) :: acc)
   (**generates the list of moves the pokemon has*)
+
 let generate_move level = function
 |Bulbasaur -> if level < 3 then [Tackle] else if level < 7 then num_moves 2 bulb_moves [] else if 
                   level < 9 then num_moves 3 bulb_moves [] else bulb_moves
@@ -47,8 +48,10 @@ let generate_move level = function
                   level < 9 then num_moves 3 sand_moves [] else sand_moves
 |Geodude -> if level < 3 then [Tackle] else if level < 7 then num_moves 2 geodude_moves [] else if 
                   level < 9 then num_moves 3 geodude_moves [] else geodude_moves
+
 let extract = function
-|Some x -> x
+| Some x -> x
+| None -> failwith "error in tile extract"
 
 (**Generates the random pokemon*)
 let generate_pokemon tileT = match tileT with 
@@ -64,13 +67,15 @@ Path _ -> None
       xp = ((l*10) + Random.int 10)
     };
   })
-let get_color_string = function
+
+  let get_color_string = function
 | Grass t -> "Grass"
 | Sand t -> "Sand"
 | Water t -> "Water"
 | Bushes t -> "Bushes"
 | Rocks t -> "Rocks"
 | Path t -> "Path"
+
 let get_color = function
 | Grass t -> t.color
 | Sand t -> t.color

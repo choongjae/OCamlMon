@@ -137,7 +137,8 @@ let room_layout = function
 | "town" -> town.layout
 | _ -> failwith "No"
 
-let get_tile coord room_name = (room_layout room_name).((fst coord)/25).((snd coord)/25)
+(* let get_tile coord room_name = (room_layout room_name).((fst coord)/25).((snd coord)/25) *)
+let get_tile coord room_name = (room_layout room_name).(20-(snd coord)/25).((fst coord)/25)
 
 let string_to_room = function
 | "home" -> hometown
