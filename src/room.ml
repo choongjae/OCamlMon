@@ -23,7 +23,7 @@ let exit_to_room e = {name = ""; layout = [|[||]|]; exits = []}
 (**TODO*)
 
 
-let forest_exit = {name = "forest"; coordinates = (250, 525)}
+let forest_exit = {name = "forest"; coordinates = (250, 500)}
 let town_exit = {name = "town"; coordinates = (-25, 250)}
 let home_layout =
   [|
@@ -88,7 +88,7 @@ let town_layout =
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
-    [|path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;|];
+    [|grass;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;path;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
     [|grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;grass;|];
@@ -121,7 +121,7 @@ let town = {
   name = "town";
   layout = town_layout;
   exits = [
-    {name = "home"; coordinates = (525, 250)};
+    {name = "home"; coordinates = (500, 250)};
   ]
 }
 

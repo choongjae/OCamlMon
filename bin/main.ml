@@ -49,7 +49,7 @@ end
 let rec is_exit (x,y) = function
 | [] -> false
 | h :: t -> 
-  if (x == fst(h.coordinates) && y == snd(h.coordinates)) then true
+  if x == fst(h.coordinates) && y == snd(h.coordinates) then true
   else is_exit (x,y) t
 
 let rec helper room (x,y) = function
@@ -65,31 +65,12 @@ let stay_or_exit room (x, y) = begin
 end
 
 let get_exit_start_pos (x, y) = begin
-  if x = -25 then (500, y)
-  else if x = 525 then (0, y)
-  else if y = -25 then (x, 500)
+  if x = -25 then (475, y)
+  else if x = 500 then (0, y)
+  else if y = -25 then (x, 475)
   else (x, 0)
 end
 
-(** [move (x, y) (u, v)] moves the character from its initial position of 
-[(x, v)] to [(u, v)]. Note that these coordinates correspond to the bottom-left
-corner of the grid square that the character is on. We also use auto_synchronize
-to batch the operations of filling in the old/new squares. *)
-let move room (xinit, yinit) (xlast, ylast) sprite fill = begin
-  if is_exit (xlast, ylast) (string_to_room room).exits || (xlast >= 0 && ylast >= 0 && xlast <=500 && ylast <= 500) then
-    (moveto xlast ylast;
-    auto_synchronize false;
-    draw_image sprite xlast ylast;
-    draw_square (xinit, yinit) fill black;
-    auto_synchronize true;
-    let new_room = stay_or_exit room (xlast, ylast) in
-    let new_coord = 
-      (if new_room = room then (xlast, ylast) else get_exit_start_pos (xlast, ylast))
-      in 
-    update_state new_room new_coord Walk (*this needs to be updated based on actions*))
-  else
-    update_state room (xinit, yinit) Walk
-end
 
 let draw_room room_array = begin
   for row = 0 to 20 do
@@ -98,6 +79,35 @@ let draw_room room_array = begin
       draw_square ((col*25),((500-25*row))) fill black
     done;
   done;
+end
+
+(** [move (x, y) (u, v)] moves the character from its initial position of 
+[(x, v)] to [(u, v)]. Note that these coordinates correspond to the bottom-left
+corner of the grid square that the character is on. We also use auto_synchronize
+to batch the operations of filling in the old/new squares. *)
+let move room (xinit, yinit) (xlast, ylast) sprite fill = begin
+  (* print_endline (string_of_int xlast);
+    print_endline (string_of_int ylast);
+  if is_exit (xlast, ylast) (string_to_room room).exits then
+    print_endline "is exit";
+  if (xlast >= 0 && ylast >= 0 && xlast <=500 && ylast <= 500) then
+    print_endline "in bounds"; *)
+  if is_exit (xlast, ylast) (string_to_room room).exits || (xlast >= 0 && ylast >= 0 && xlast <=500 && ylast <= 500) then
+    (moveto xlast ylast;
+    auto_synchronize false;
+    draw_image sprite xlast ylast;
+    draw_square (xinit, yinit) fill black;
+    auto_synchronize true;
+    let new_room = stay_or_exit room (xlast, ylast) in
+    let new_coord = 
+      (if new_room = room then (xlast, ylast) 
+      else get_exit_start_pos (xlast, ylast))
+      in 
+    let n_state = update_state new_room new_coord Walk in
+    if new_room <> room then draw_room (room_layout (get_current_room n_state));
+    n_state)
+  else
+    update_state room (xinit, yinit) Walk
 end
 
 let test_print_poke next_state = begin
@@ -113,8 +123,6 @@ let test_print_poke next_state = begin
 end
 
 let rec play curr_state = 
-  draw_room (room_layout (get_current_room curr_state));
-
   let player_sprite = make_image player in
     let fst_coord = (fst (get_current_coord curr_state)) in
     let snd_coord = (snd (get_current_coord curr_state)) in
@@ -150,6 +158,7 @@ let play_game name =
   set_window_title "OCamlMon";
   (* set_color green; *)
   let curr_state = init_state in
+  draw_room (room_layout (get_current_room curr_state));
   play curr_state
   
 
