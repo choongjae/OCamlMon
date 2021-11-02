@@ -1,3 +1,11 @@
+"""
+Python script for converting image files (png) into OCaml arrays of hexademical
+color values, to be used in conjunction with the OCaml Graphics library to
+generate sprites for OCamlMon.
+
+Authors: CJ Lee, Kimmy Lin, Sabrina Li
+"""
+
 from PIL import Image
 
 def rgb_to_hex(r, g, b):
