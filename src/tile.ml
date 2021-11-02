@@ -19,7 +19,7 @@ let path = Path {color = 0xffbd66; encounters = []}
 let generate_randomNum x = Random.int 11
 
 (*Determines whether an encounter happens based on the random num generator*)
-let generate_encounter () = if generate_randomNum () > 8 then true else false
+let generate_encounter () = if generate_randomNum () > 9 then true else false
 
 (**generates a random pokemon tuple based on the tile*)
 let type_pokemon = function 
@@ -29,8 +29,10 @@ let type_pokemon = function
     |Bushes _-> Some (Bulbasaur, poke_to_string Bulbasaur)
     |Rocks _-> Some (Geodude, poke_to_string Geodude)
     |Path _ -> None
+
 (**Generates a random moves based on the pokemon move list*)
 let random_move l = List.nth l (Random.int (List.length l))
+
 (**Generates a list of pokemon moves*)
 let rec num_moves n l acc = match n with 
   0 -> acc
@@ -68,7 +70,7 @@ Path _ -> None
     };
   })
 
-  let get_color_string = function
+let get_color_string = function
 | Grass t -> "Grass"
 | Sand t -> "Sand"
 | Water t -> "Water"
