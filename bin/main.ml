@@ -4,44 +4,13 @@ open Game
 open State
 open Room
 open Tile
+open Parser
 
 let mainWorldlist = []
 
-(** [parse_color c] is the Graphics library color type corresponding to an
-identically-named string [c]. Defaults to white if there is no match. *)
-let parse_color c =
-  let c = to_string c in
-  match c with
-  | "transp" -> transp
-  | "black" -> black
-  | "white" -> white
-  | "red" -> red
-  | "green" -> red
-  | "blue" -> blue
-  | "yellow" -> yellow
-  | "cyan" -> cyan
-  | "magenta" -> magenta
-  | _ -> white
-
-(** [parse_inner_list j] is the color list of [j], where [j] is a Yojson.Basic.t
-list of colors represented as strings, essentially for an inner-list of the 2D
-list from the JSON file. *)
-let rec parse_inner_list j =
-  match j with
-  | [] -> []
-  | h :: t -> parse_color h :: parse_inner_list t
-
-(** [parse_list j] is the color array list of the Yojson.Basic.t list [j],
-where [j] is a 2D list containing more Yojson.Basic.t lists of the color values
-for the sprite *)
-let rec parse_list j = 
-  match j with
-  | [] -> []
-  | h :: t -> (h |> to_list |> parse_inner_list |> Array.of_list) :: parse_list t
-
 let tsprite = "data/player.json" |> Yojson.Basic.from_file |> member "sprite"
 let spritelist = tsprite |> to_list
-let player = spritelist |> parse_list |> Array.of_list
+let player = spritelist |> (parse_list parse_color) |> Array.of_list
 
 (** [draw_square (x, y) f b] draws a 25x25 pixel square with the bottom-left
 corner at [(x, y)], with a fill color [f] and border color [b]. *)

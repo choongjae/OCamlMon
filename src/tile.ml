@@ -12,8 +12,8 @@ type tile = | Grass of t
 let grass = Grass {color = 0x2ecc71; encounters = [Caterpie; Bulbasaur]}
 let sand = Sand {color = 0xf1c40f; encounters = [Sandshrew; O]}
 let water = Water {color = 0x3498db; encounters = [Squirtle]}
-let bushes = Bushes {color = 0x8e8e93; encounters =  [Bulbasaur]}
-let rocks = Rocks {color = 0xffeb3b; encounters =  [Geodude]}
+let bushes = Bushes {color = 0x1c390f; encounters =  [Bulbasaur]}
+let rocks = Rocks {color = 0x808080; encounters =  [Geodude]}
 let path = Path {color = 0xffbd66; encounters = []}
 (**Generates a random number*)
 let generate_randomNum x = Random.int 11
