@@ -1,3 +1,3 @@
 (executable
  (name main)
- (libraries Game graphics ANSITerminal Yojson))
+ (libraries Game graphics ANSITerminal yojson))

@@ -138,7 +138,7 @@ let rec play curr_state =
               | 'a' -> let next = move (get_current_room curr_state) (a, b) (a-25, b) player_sprite pad_color in test_print_poke next; play next;
               | 's' -> let next = move (get_current_room curr_state) (a, b) (a, b-25) player_sprite pad_color in test_print_poke next; play next;
               | 'd' -> let next = move (get_current_room curr_state) (a, b) (a+25, b) player_sprite pad_color in test_print_poke next; play next;
-              | _ -> ();
+              | _ -> play curr_state;
     with 
     | Exit | Graphic_failure("fatal I/O error") -> close_graph ()
 
