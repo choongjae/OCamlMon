@@ -10,10 +10,12 @@ let caterpie_moves = [Tackle ; Bugbite ; StringShot]
 let sand_moves = [Tackle ; SandAttack ; GyroBall ; SandStorm]
 let geodude_moves = [Tackle ; RockThrow ; Earthquake ; Explosion]
 let o_moves = [Encapsulate ; Abstract ; RaiseFail]
+
 type pokemon_stats = {
   level : int;
   xp : int
 }
+
 type pokemon = {
   name : string;
   t_poke : p;
@@ -33,6 +35,7 @@ let poke_to_string = function
 | Sandshrew -> "Sandshrew"
 | Geodude -> "Geodude"
 | O -> "O"
+
 let pmove_to_string = function
 |Tackle -> "Tackle"
 |VineWhip -> "Vine Whip"

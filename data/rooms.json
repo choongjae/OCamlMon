@@ -1,0 +1,174 @@
+{
+  "home": {
+    "name": "home",
+    "exits": [
+      {
+        "name": "forest",
+        "coordinates": [250, 500]
+      },
+      {
+        "name": "town",
+        "coordinates": [-25, 250]
+      },
+      {
+        "name": "cave",
+        "coordinates": [250, -25]
+      },
+      {
+        "name": "beach",
+        "coordinates": [500, 250]
+      }
+    ],
+    "layout": [
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","water","water","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","water","water","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["path","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","bushes","bushes","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","bushes","bushes","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"]
+    ]
+  },
+  "forest": {
+    "name": "forest",
+    "exits": [
+      {
+        "name": "home",
+        "coordinates": [250, -25]
+      }
+    ],
+    "layout": [
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+    ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"]
+  ]
+  },
+  "town": {
+    "name": "town",
+    "exits": [
+      {
+        "name": "home",
+        "coordinates": [500, 250]
+      }
+    ],
+    "layout": [
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path","path"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"],
+      ["grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"]
+  ]
+  },
+  "cave": {
+    "name": "cave",
+    "exits": [
+      {
+        "name": "home",
+        "coordinates": [250, 500]
+      }
+    ],
+    "layout": [
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"],
+      ["rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks","rocks"]
+  ]
+  },
+  "beach": {
+    "name": "beach",
+    "exits": [
+      {
+        "name": "home",
+        "coordinates": [-25, 250]
+      }
+    ],
+    "layout": [
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"],
+      ["sand","sand","sand","sand","sand","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water","water"]
+  ]
+  }
+}
