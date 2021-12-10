@@ -126,7 +126,6 @@ let rec play curr_state =
       let st = wait_next_event [Key_pressed;] in
         if st.keypressed then
           if st.key = 'q' then raise Exit else
-          if st.key = 'c' then clear_graph () else
             let (a,b) = get_current_coord curr_state in
               (* print_endline(string_of_int b); *)
               let pad_color = get_color (get_tile (a,b) (get_current_room curr_state)) in
@@ -140,7 +139,7 @@ let rec play curr_state =
               | 'd' -> let next = move (get_current_room curr_state) (a, b) (a+25, b) player_sprite pad_color in test_print_poke next; play next;
               | _ -> play curr_state;
     with 
-    | Exit | Graphic_failure("fatal I/O error") -> close_graph ()
+    | Exit -> clear_graph () (* changing this exception pattern match to _ fixes Seg fault and making if st.key = 'q' be clear_graph () *)
 
 (** [play_game n] begins running the main game loop with the [n] customization
 details that the user provided. *)

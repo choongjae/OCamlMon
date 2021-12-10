@@ -2,6 +2,8 @@
 
 ![Logo](./assets/OCamlMonLogo.png)
 
+##### All trademarks are the property of their respective owners. Please don't sue us.
+
 ## Description
 
 OCamlMon is a recreation of Pokemon, built in OCaml! From wild encounters to
@@ -12,12 +14,14 @@ up your own team of battle-ready OCamlMons.
 
 Assumes the OCaml installation process as dictated by [Cornell's Fall 2021 CS 3110 requirements](https://cs3110.github.io/textbook/chapters/preface/install.html)
 
-Download the Graphics, ANSIITerminal, and yojson libraries:
+Install the Graphics, ANSIITerminal, and yojson libraries via opam:
 `opam install graphics ANSIITerminal yojson`
 
-An XServer is require to run the graphics
-Windows: download XMing
-Mac: download XQuartz (and restart laptop after)
+An XServer is required to run the graphics (restart computer after installing)
+
+- Windows: download XMing
+
+- Mac: download XQuartz
 
 Run `make build` to build dependencies
 
