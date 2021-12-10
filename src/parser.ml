@@ -18,7 +18,7 @@ let parse_color c =
   | "yellow" -> yellow
   | "cyan" -> cyan
   | "magenta" -> magenta
-  | _ -> white
+  | others -> int_of_string others
 
 (** [parse_tile t] is the Tile type correspnding to an identically-named
 string [t]. Defaults to grass if there is no match. *)

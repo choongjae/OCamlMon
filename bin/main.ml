@@ -8,7 +8,7 @@ open Parser
 
 let mainWorldlist = []
 
-let tsprite = "data/player.json" |> Yojson.Basic.from_file |> member "sprite"
+let tsprite = "data/player.json" |> Yojson.Basic.from_file |> member "sprite2"
 let spritelist = tsprite |> to_list
 let player = spritelist |> (parse_list parse_color) |> Array.of_list
 
