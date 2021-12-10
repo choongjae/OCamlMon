@@ -2,9 +2,10 @@ open Pokemon
 
 type trainer = {
   name : string;
-  team : pokemon list
+  team : pokemon list;
 }
 
+val current_team : trainer -> pokemon list
+
 val add_pokemon : trainer -> pokemon -> trainer
-(** [add_pokemon t p] is a trainer with pokemon [p] added to the team
-of [t] *)
+(** [add_pokemon t p] is a trainer with pokemon [p] added to the team of [t] *)

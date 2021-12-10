@@ -1,4 +1,5 @@
 open Room
+open Trainer
 
 type action =
   | Battle
@@ -14,6 +15,8 @@ val current_coord : t -> int * int
 
 val current_action : t -> action
 
-val init_state : t
+val current_trainer : t -> trainer
 
-val update_state : string -> int * int -> action -> t
+val init_state : trainer -> t
+
+val update_state : string -> int * int -> action -> trainer -> t

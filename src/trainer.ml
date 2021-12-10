@@ -5,4 +5,6 @@ type trainer = {
   team : pokemon list;
 }
 
-let add_pokemon t p = {name = t.name; team = p :: t.team}
+let current_team t = t.team
+
+let add_pokemon t p = { name = t.name; team = p :: t.team }

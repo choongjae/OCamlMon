@@ -5,6 +5,8 @@ open State
 open Room
 open Tile
 open Parser
+open Trainer
+open Pokemon
 
 let mainWorldlist = []
 
@@ -39,8 +41,7 @@ let rec is_exit (x, y) = function
       if x == fst h.coordinates && y == snd h.coordinates then true
       else is_exit (x, y) t
 
-(** [helper r x y] is a helper function for [stay_or_exit] TODO: More
-    descriptive name. *)
+(** [take_exit r (x, y)] is the room cooresponding with the exit as (x, y) *)
 let rec take_exit room (x, y) = function
   | [] -> room
   | h :: t ->
@@ -73,6 +74,28 @@ let draw_room room_array =
     done
   done
 
+(* let encounter st = let room = current_room st in let tile = get_tile
+   (current_coord st) room in if generate_encounter () then let poke =
+   generate_pokemon tile in
+
+   else st *)
+
+(** [test_print_poke n] prints a random Pokemon encounter depending on state
+    [n] if it occurs. Using for testing purposes before implementing battle
+    engine *)
+let encounter st =
+  let room = current_room st in
+  let tile = get_tile (current_coord st) room in
+  let gen_poke_test =
+    if generate_encounter () then
+      match generate_pokemon tile with
+      | Some poke -> print_endline poke.name
+      | None -> ()
+  in
+  match tile with
+  | Path _ -> ()
+  | _ -> gen_poke_test
+
 (** [move st (x, y) (u, v) sp f] moves the character from its initial
     position of [(x, v)] to [(u, v)], according to the current state [st].
     Note that these coordinates correspond to the bottom-left corner of the
@@ -85,9 +108,10 @@ let move st (x0, y0) (x1, y1) sp fill =
     is_exit (x1, y1) (room_of_string room).exits
     || (x1 >= 0 && y1 >= 0 && x1 < 500 && y1 < 500)
   then (
+    let trainer = current_trainer st in
     let room' = enter_room room (x1, y1) in
     let x1, y1 = if room' = room then (x1, y1) else exit_coord (x1, y1) in
-    let st' = update_state room' (x1, y1) Walk in
+    let st' = update_state room' (x1, y1) Walk trainer in
     let is_new_room = room' <> room in
     (* Need to do save this bool because I cant figure out to only have
        conditional and make the drawing order correct. If someone figures
@@ -98,26 +122,11 @@ let move st (x0, y0) (x1, y1) sp fill =
     draw_image sp (x1, y1);
     if not is_new_room then draw_square (x0, y0) fill black;
     auto_synchronize true;
+    (* match encounter st' with | Some p -> print_endline p.name; st' | None
+       -> st' *)
+    encounter st';
     st')
   else st
-
-(** [test_print_poke n] prints a random Pokemon encounter depending on state
-    [n] if it occurs. Using for testing purposes before implementing battle
-    engine *)
-let test_print_poke next_state =
-  (* TODO: This needs to be called in [move], rather than calling it in
-     [play] *)
-  let curr_room = current_room next_state in
-  let curr_tile = get_tile (current_coord next_state) curr_room in
-  let gen_poke_test =
-    if generate_encounter () then
-      match generate_pokemon curr_tile with
-      | Some poke -> print_endline poke.name
-      | None -> ()
-  in
-  match curr_tile with
-  | Path _ -> ()
-  | _ -> gen_poke_test
 
 (** [play st sp] is the main game loop for running OCamlMon, where [st]
     represents the current state that the player is in and [sp] is the
@@ -128,26 +137,33 @@ let rec play st sp =
     if status.keypressed then
       if status.key = 'q' then raise Exit
       else
-        let x, y = current_coord st in
-        let tile_color = get_color (get_tile (x, y) (current_room st)) in
-        match status.key with
-        | 'w' ->
-            let next = move st (x, y) (x, y + 25) sp tile_color in
-            test_print_poke next;
-            play next sp
-        | 'a' ->
-            let next = move st (x, y) (x - 25, y) sp tile_color in
-            test_print_poke next;
-            play next sp
-        | 's' ->
-            let next = move st (x, y) (x, y - 25) sp tile_color in
-            test_print_poke next;
-            play next sp
-        | 'd' ->
-            let next = move st (x, y) (x + 25, y) sp tile_color in
-            test_print_poke next;
-            play next sp
-        | _ -> play st sp
+        match current_action st with
+        | Walk -> begin
+            let x, y = current_coord st in
+            let tile_color =
+              get_color (get_tile (x, y) (current_room st))
+            in
+            match status.key with
+            | 'w' ->
+                let next = move st (x, y) (x, y + 25) sp tile_color in
+                play next sp
+            | 'a' ->
+                let next = move st (x, y) (x - 25, y) sp tile_color in
+                play next sp
+            | 's' ->
+                let next = move st (x, y) (x, y - 25) sp tile_color in
+                play next sp
+            | 'd' ->
+                let next = move st (x, y) (x + 25, y) sp tile_color in
+                play next sp
+            | 'e' ->
+                print_endline "Opening Inventory";
+                play st sp
+            | _ -> play st sp
+          end
+        | Battle -> failwith "Unimplemented"
+        | Menu -> failwith "Unimplemented"
+        | Talk -> failwith "Unimplemented"
   with
   | Exit -> clear_graph ()
 (* idk why clear_graph works the best *)
@@ -157,7 +173,8 @@ let rec play st sp =
 let init_game name =
   open_graph " 500x500";
   set_window_title "OCamlMon";
-  let curr_state = init_state in
+  let trainer = { name = "Test"; team = [] } in
+  let curr_state = init_state trainer in
   draw_room (room_layout (current_room curr_state));
   let sp = make_image player in
   let x, y = current_coord curr_state in
@@ -166,14 +183,31 @@ let init_game name =
   play curr_state sp
 
 (** [main ()] prompts for the game to play, then starts it. *)
-let main () =
+let rec main () =
+  let name = name () in
+  let starter = starter name in
+  init_game name
+
+and name () =
   ANSITerminal.print_string [ ANSITerminal.red ]
     "\nWelcome to the world of OCámlMon! \n";
-  print_endline "Please enter your name: ";
+  print_endline "What's your name?";
   print_string "> ";
   match read_line () with
-  | exception End_of_file -> ()
-  | name -> init_game name
+  | name -> name
+  | exception End_of_file -> name ()
+
+and starter name =
+  print_endline (name ^ "! Nice to meet you!");
+  print_endline
+    "Now, you have a choice. Which starter Pokemon would you like?";
+  print_endline "Pikachu     Squirtle     Bulbasaur    Charmander";
+  match read_line () with
+  | s -> begin
+      try make_starter_pokemon (String.lowercase_ascii s) with
+      | Failure f -> starter name
+    end
+  | exception End_of_file -> starter name
 
 (* Execute the game engine. *)
 let () = main ()
