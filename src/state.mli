@@ -1,8 +1,19 @@
 open Room
-type action = Battle | Walk | Menu | Talk
+
+type action =
+  | Battle
+  | Walk
+  | Menu
+  | Talk
+
 type t
-val get_current_room : t -> string
-val get_current_coord : t -> (int * int)
-val get_action : t -> action
+
+val current_room : t -> string
+
+val current_coord : t -> int * int
+
+val current_action : t -> action
+
 val init_state : t
-val update_state : string -> (int*int) -> action -> t
+
+val update_state : string -> int * int -> action -> t

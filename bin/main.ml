@@ -8,160 +8,172 @@ open Parser
 
 let mainWorldlist = []
 
-let tsprite = "data/player.json" |> Yojson.Basic.from_file |> member "sprite2"
+let tsprite =
+  "data/player.json" |> Yojson.Basic.from_file |> member "sprite2"
+
 let spritelist = tsprite |> to_list
-let player = spritelist |> (parse_list parse_color) |> Array.of_list
+
+let player = spritelist |> parse_list parse_color |> Array.of_list
+
+(** [moveto (x,y)] is the same as graphic's [moveto], except this takes an
+    explicit pair. Makes code cleaner. *)
+let moveto (x, y) = moveto x y
+
+(** [draw_image sp (x,y)] is the same as graphic's [draw_image], except this
+    takes an explicit pair. Makes code cleaner. *)
+let draw_image sp (x, y) = draw_image sp x y
 
 (** [draw_square (x, y) f b] draws a 25x25 pixel square with the bottom-left
-corner at [(x, y)], with a fill color [f] and border color [b]. *)
-let draw_square (x, y) fill border = begin
+    corner at [(x, y)], with a fill color [f] and border color [b]. *)
+let draw_square (x, y) fill border =
   set_color fill;
   fill_rect x y 25 25;
   set_color border;
-  draw_rect x y 25 25;
-end
+  draw_rect x y 25 25
 
-(** [is_exit x y r] is whether or not the given coordinates [(x, y)] correspond
-to a valid exit in the given room [r]. *)
-let rec is_exit (x,y) = function
-| [] -> false
-| h :: t -> 
-  if x == fst(h.coordinates) && y == snd(h.coordinates) then true
-  else is_exit (x,y) t
+(** [is_exit x y r] is whether or not the given coordinates [(x, y)]
+    correspond to a valid exit in the given room [r]. *)
+let rec is_exit (x, y) = function
+  | [] -> false
+  | h :: t ->
+      if x == fst h.coordinates && y == snd h.coordinates then true
+      else is_exit (x, y) t
 
-(** [helper r x y] is a helper function for [stay_or_exit]
-TODO: More descriptive name. *)
-let rec helper room (x,y) = function
-| [] -> room
-| h :: t -> 
-  if (x == fst(h.coordinates) && y == snd(h.coordinates)) then h.name
-  else helper room (x,y) t
+(** [helper r x y] is a helper function for [stay_or_exit] TODO: More
+    descriptive name. *)
+let rec take_exit room (x, y) = function
+  | [] -> room
+  | h :: t ->
+      if (x, y) = h.coordinates then h.name else take_exit room (x, y) t
 
-(** [stay_or_exit r x y] is the string for the room that the player should
-be in after moving, depending on their current room [r] and their current
-position [(x, y)] *)
-let stay_or_exit room (x, y) = begin
-  let the_room = string_to_room room in
-  let pos_exits = the_room.exits in
-  helper room (x,y) pos_exits
-end
+(** [enter_room r x y] is the string for the room that the player should be
+    in after moving, depending on their current room [r] and their current
+    position [(x, y)] *)
+let enter_room room (x, y) =
+  let room' = room_of_string room in
+  let pos_exits = room'.exits in
+  take_exit room (x, y) pos_exits
 
-(** [get_exit_start_pos x y] is the position of the player of the next room
-after taking an exit. For instance, if the player exits to the right of a room,
-their start position of the next room will be on the left. *)
-let get_exit_start_pos (x, y) = begin
+(** [new_room_coords x y] is the position of the player of the next room
+    after taking an exit. For instance, if the player exits to the right of
+    a room, their start position of the next room will be on the left. *)
+let exit_coord (x, y) =
   if x = -25 then (475, y)
   else if x = 500 then (0, y)
   else if y = -25 then (x, 475)
   else (x, 0)
-end
 
 (** [draw_room arr] draws the tiles of the room array [arr] to the current
-graphics screen *)
-let draw_room room_array = begin
+    graphics screen *)
+let draw_room room_array =
   for row = 0 to 20 do
     for col = 0 to 20 do
-      let fill = (get_color room_array.(row).(col)) in
-      draw_square ((col*25),((500-25*row))) fill black
-    done;
-  done;
-end
+      let fill = get_color room_array.(row).(col) in
+      draw_square (col * 25, 500 - (25 * row)) fill black
+    done
+  done
 
-(** [move (x, y) (u, v)] moves the character from its initial position of 
-[(x, v)] to [(u, v)]. Note that these coordinates correspond to the bottom-left
-corner of the grid square that the character is on. We also use auto_synchronize
-to batch the operations of filling in the old/new squares. *)
-let move room (xinit, yinit) (xlast, ylast) sprite fill = begin
-  (* print_endline (string_of_int xlast);
-    print_endline (string_of_int ylast);
-  if is_exit (xlast, ylast) (string_to_room room).exits then
-    print_endline "is exit";
-  if (xlast >= 0 && ylast >= 0 && xlast <=500 && ylast <= 500) then
-    print_endline "in bounds"; *)
-  if is_exit (xlast, ylast) (string_to_room room).exits ||
-    (xlast >= 0 && ylast >= 0 && xlast < 500 && ylast < 500) then
-    (moveto xlast ylast;
+(** [move st (x, y) (u, v) sp f] moves the character from its initial
+    position of [(x, v)] to [(u, v)], according to the current state [st].
+    Note that these coordinates correspond to the bottom-left corner of the
+    grid square that the character is on. We use auto_synchronize to batch
+    the operations of filling in the old tile with [f] and drawing the
+    sprite [sp] on the new tile. *)
+let move st (x0, y0) (x1, y1) sp fill =
+  let room = current_room st in
+  if
+    is_exit (x1, y1) (room_of_string room).exits
+    || (x1 >= 0 && y1 >= 0 && x1 < 500 && y1 < 500)
+  then (
+    let room' = enter_room room (x1, y1) in
+    let x1, y1 = if room' = room then (x1, y1) else exit_coord (x1, y1) in
+    let st' = update_state room' (x1, y1) Walk in
+    let is_new_room = room' <> room in
+    (* Need to do save this bool because I cant figure out to only have
+       conditional and make the drawing order correct. If someone figures
+       out a better way feel free to change -CJ *)
+    moveto (x1, y1);
     auto_synchronize false;
-    draw_image sprite xlast ylast;
-    draw_square (xinit, yinit) fill black;
+    if is_new_room then draw_room (room_layout (current_room st'));
+    draw_image sp (x1, y1);
+    if not is_new_room then draw_square (x0, y0) fill black;
     auto_synchronize true;
-    let new_room = stay_or_exit room (xlast, ylast) in
-    let new_coord = 
-      (if new_room = room then (xlast, ylast) 
-      else get_exit_start_pos (xlast, ylast))
-      in 
-    let n_state = update_state new_room new_coord Walk in
-    if new_room <> room then draw_room (room_layout (get_current_room n_state));
-    n_state)
-  else
-    update_state room (xinit, yinit) Walk
-end
+    st')
+  else st
 
-(** [test_print_poke n] prints a random Pokemon encounter depending on state [n]
-if it occurs. Using for testing purposes before implementing battle engine *)
-let test_print_poke next_state = begin
-  let curr_room = get_current_room next_state in
-  let curr_tile = get_tile (get_current_coord next_state) curr_room in
-  let gen_poke_test = if generate_encounter () then
-    match generate_pokemon curr_tile with
-    | Some poke -> print_endline poke.name 
-    | None -> () in
-    match curr_tile with 
-    | Path _ -> ()
-    | _ -> gen_poke_test
-end
+(** [test_print_poke n] prints a random Pokemon encounter depending on state
+    [n] if it occurs. Using for testing purposes before implementing battle
+    engine *)
+let test_print_poke next_state =
+  (* TODO: This needs to be called in [move], rather than calling it in
+     [play] *)
+  let curr_room = current_room next_state in
+  let curr_tile = get_tile (current_coord next_state) curr_room in
+  let gen_poke_test =
+    if generate_encounter () then
+      match generate_pokemon curr_tile with
+      | Some poke -> print_endline poke.name
+      | None -> ()
+  in
+  match curr_tile with
+  | Path _ -> ()
+  | _ -> gen_poke_test
 
-(** [play s] is the main game loop for running OCamlMon, where [s] represents
-the current state that the player is in. *)
-let rec play curr_state = 
-  let player_sprite = make_image player in
-    let fst_coord = (fst (get_current_coord curr_state)) in
-    let snd_coord = (snd (get_current_coord curr_state)) in
-    moveto fst_coord snd_coord;
-    draw_image player_sprite fst_coord snd_coord;
-    (* print_endline(string_of_int (fst (get_current_coord curr_state))); *)
-    (* draw_square (250, 250) black black; *)
-    (* draw_string "P"; *)
-    try
-      let st = wait_next_event [Key_pressed;] in
-        if st.keypressed then
-          if st.key = 'q' then raise Exit else
-            let (a,b) = get_current_coord curr_state in
-              (* print_endline(string_of_int b); *)
-              let pad_color = get_color (get_tile (a,b) (get_current_room curr_state)) in
-              match st.key with
-              | 'w' -> let next = move (get_current_room curr_state) (a, b) (a, b+25) player_sprite pad_color in test_print_poke next; play next;
-              (* in let curr_room = get_current_room next in let curr_tile = get_tile (get_current_coord next) curr_room in 
-              (match curr_tile with Path _ -> () | _ -> (match generate_pokemon curr_tile with Some poke -> (print_endline poke.name)));
-              print_endline (get_color_string curr_tile) ;play next; *)
-              | 'a' -> let next = move (get_current_room curr_state) (a, b) (a-25, b) player_sprite pad_color in test_print_poke next; play next;
-              | 's' -> let next = move (get_current_room curr_state) (a, b) (a, b-25) player_sprite pad_color in test_print_poke next; play next;
-              | 'd' -> let next = move (get_current_room curr_state) (a, b) (a+25, b) player_sprite pad_color in test_print_poke next; play next;
-              | _ -> play curr_state;
-    with 
-    | Exit -> clear_graph () (* changing this exception pattern match to _ fixes Seg fault and making if st.key = 'q' be clear_graph () *)
+(** [play st sp] is the main game loop for running OCamlMon, where [st]
+    represents the current state that the player is in and [sp] is the
+    player's sprite. *)
+let rec play st sp =
+  try
+    let status = wait_next_event [ Key_pressed ] in
+    if status.keypressed then
+      if status.key = 'q' then raise Exit
+      else
+        let x, y = current_coord st in
+        let tile_color = get_color (get_tile (x, y) (current_room st)) in
+        match status.key with
+        | 'w' ->
+            let next = move st (x, y) (x, y + 25) sp tile_color in
+            test_print_poke next;
+            play next sp
+        | 'a' ->
+            let next = move st (x, y) (x - 25, y) sp tile_color in
+            test_print_poke next;
+            play next sp
+        | 's' ->
+            let next = move st (x, y) (x, y - 25) sp tile_color in
+            test_print_poke next;
+            play next sp
+        | 'd' ->
+            let next = move st (x, y) (x + 25, y) sp tile_color in
+            test_print_poke next;
+            play next sp
+        | _ -> play st sp
+  with
+  | Exit -> clear_graph ()
+(* idk why clear_graph works the best *)
 
-(** [play_game n] begins running the main game loop with the [n] customization
-details that the user provided. *)
-let play_game name =
+(** [init_game n] begins running the main game loop with the [n]
+    customization details that the user provided. *)
+let init_game name =
   open_graph " 500x500";
   set_window_title "OCamlMon";
-  (* set_color green; *)
   let curr_state = init_state in
-  draw_room (room_layout (get_current_room curr_state));
-  play curr_state
-  
+  draw_room (room_layout (current_room curr_state));
+  let sp = make_image player in
+  let x, y = current_coord curr_state in
+  moveto (x, y);
+  draw_image sp (x, y);
+  play curr_state sp
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
   ANSITerminal.print_string [ ANSITerminal.red ]
     "\nWelcome to the world of OCámlMon! \n";
-  print_endline
-    "Please enter your name: ";
+  print_endline "Please enter your name: ";
   print_string "> ";
   match read_line () with
   | exception End_of_file -> ()
-  | name -> play_game (name)
+  | name -> init_game name
 
 (* Execute the game engine. *)
 let () = main ()

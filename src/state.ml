@@ -1,22 +1,23 @@
 open Room
-type action = Battle | Walk | Menu | Talk
+
+type action =
+  | Battle
+  | Walk
+  | Menu
+  | Talk
+
 type t = {
-  current_room : string;
-  current_coord : int * int;
-  current_action : action
-  }
-let get_current_room state = state.current_room
-let get_current_coord state = state.current_coord
-let get_action state = state.current_action
-
-let init_state = {
-  current_room = "home";
-  current_coord = (250,250);
-  current_action = Walk;
+  room : string;
+  coords : int * int;
+  action : action;
 }
 
-let update_state room coord action = {
-  current_room = room;
-  current_coord = coord;
-  current_action = action;
-}
+let current_room state = state.room
+
+let current_coord state = state.coords
+
+let current_action state = state.action
+
+let init_state = { room = "home"; coords = (250, 250); action = Walk }
+
+let update_state room coord action = { room; coords = coord; action }
