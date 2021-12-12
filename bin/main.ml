@@ -7,6 +7,8 @@ open Tile
 open Parser
 open Trainer
 open Pokemon
+open Drawing
+open Battle
 
 let mainWorldlist = []
 
@@ -16,22 +18,6 @@ let tsprite =
 let spritelist = tsprite |> to_list
 
 let player = spritelist |> parse_list parse_color |> Array.of_list
-
-(** [moveto (x,y)] is the same as graphic's [moveto], except this takes an
-    explicit pair. Makes code cleaner. *)
-let moveto (x, y) = moveto x y
-
-(** [draw_image sp (x,y)] is the same as graphic's [draw_image], except this
-    takes an explicit pair. Makes code cleaner. *)
-let draw_image sp (x, y) = draw_image sp x y
-
-(** [draw_square (x, y) f b] draws a 25x25 pixel square with the bottom-left
-    corner at [(x, y)], with a fill color [f] and border color [b]. *)
-let draw_square (x, y) fill border =
-  set_color fill;
-  fill_rect x y 25 25;
-  set_color border;
-  draw_rect x y 25 25
 
 (** [is_exit x y r] is whether or not the given coordinates [(x, y)]
     correspond to a valid exit in the given room [r]. *)
@@ -66,7 +52,8 @@ let exit_coord (x, y) =
 
 (** [draw_room arr] draws the tiles of the room array [arr] to the current
     graphics screen *)
-let draw_room room_array =
+let draw_room st =
+  let room_array = room_layout (current_room st) in
   for row = 0 to 20 do
     for col = 0 to 20 do
       let fill = get_color room_array.(row).(col) in
@@ -74,27 +61,25 @@ let draw_room room_array =
     done
   done
 
-(* let encounter st = let room = current_room st in let tile = get_tile
-   (current_coord st) room in if generate_encounter () then let poke =
-   generate_pokemon tile in
-
-   else st *)
+let encounter st =
+  let room = current_room st in
+  let tile = get_tile (current_coord st) room in
+  if generate_encounter () then
+    match generate_pokemon tile with
+    | Some poke ->
+        let action = init_battle [ poke ] (get_color tile) in
+        update_action st (Battle action)
+    | None -> st
+  else st
 
 (** [test_print_poke n] prints a random Pokemon encounter depending on state
     [n] if it occurs. Using for testing purposes before implementing battle
     engine *)
-let encounter st =
-  let room = current_room st in
-  let tile = get_tile (current_coord st) room in
-  let gen_poke_test =
-    if generate_encounter () then
-      match generate_pokemon tile with
-      | Some poke -> print_endline poke.name
-      | None -> ()
-  in
-  match tile with
-  | Path _ -> ()
-  | _ -> gen_poke_test
+(* let encounter st = let room = current_room st in let tile = get_tile
+   (current_coord st) room in let gen_poke_test = if generate_encounter ()
+   then match generate_pokemon tile with | Some poke -> print_endline
+   poke.name | None -> () in match tile with | Path _ -> () | _ ->
+   gen_poke_test *)
 
 (** [move st (x, y) (u, v) sp f] moves the character from its initial
     position of [(x, v)] to [(u, v)], according to the current state [st].
@@ -118,15 +103,29 @@ let move st (x0, y0) (x1, y1) sp fill =
        out a better way feel free to change -CJ *)
     moveto (x1, y1);
     auto_synchronize false;
-    if is_new_room then draw_room (room_layout (current_room st'));
+    if is_new_room then draw_room st';
     draw_image sp (x1, y1);
     if not is_new_room then draw_square (x0, y0) fill black;
     auto_synchronize true;
     (* match encounter st' with | Some p -> print_endline p.name; st' | None
        -> st' *)
-    encounter st';
-    st')
+    encounter st')
   else st
+
+(* let change_battle_menu st key = *)
+
+let switch_to_room st sp =
+  draw_room st;
+  draw_image sp (current_coord st)
+
+let battle st sp key =
+  let b = current_battle st in
+  let data = update_battle_menu b key in
+  match data.menu with
+  | Flee ->
+      switch_to_room st sp;
+      update_action st Walk
+  | menu -> update_action st (Battle data)
 
 (** [play st sp] is the main game loop for running OCamlMon, where [st]
     represents the current state that the player is in and [sp] is the
@@ -161,7 +160,7 @@ let rec play st sp =
                 play st sp
             | _ -> play st sp
           end
-        | Battle -> failwith "Unimplemented"
+        | Battle p -> play (battle st sp status.key) sp
         | Menu -> failwith "Unimplemented"
         | Talk -> failwith "Unimplemented"
   with
@@ -175,7 +174,7 @@ let init_game name =
   set_window_title "OCamlMon";
   let trainer = { name = "Test"; team = [] } in
   let curr_state = init_state trainer in
-  draw_room (room_layout (current_room curr_state));
+  draw_room curr_state;
   let sp = make_image player in
   let x, y = current_coord curr_state in
   moveto (x, y);
