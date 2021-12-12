@@ -159,7 +159,7 @@ let rec play st sp =
           | _ -> play st sp
         end
       | Battle p -> play (battle st sp status.key) sp
-      | Menu -> failwith "Unimplemented"
+      | Menu _ -> failwith "Unimplemented"
       | Talk -> failwith "Unimplemented"
   with
   | Exit -> clear_graph ()
