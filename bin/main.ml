@@ -12,12 +12,12 @@ open Battle
 
 let mainWorldlist = []
 
-let tsprite =
-  "data/player.json" |> Yojson.Basic.from_file |> member "sprite2"
+(* let tsprite = "data/player.json" |> Yojson.Basic.from_file |> member
+   "sprite"
 
-let spritelist = tsprite |> to_list
+   let spritelist = tsprite |> to_list
 
-let player = spritelist |> parse_list parse_color |> Array.of_list
+   let player = spritelist |> parse_list parse_color |> Array.of_list *)
 
 (** [is_exit x y r] is whether or not the given coordinates [(x, y)]
     correspond to a valid exit in the given room [r]. *)
@@ -162,7 +162,9 @@ let rec play st sp =
       | Talk -> failwith "Unimplemented"
   with
   | Exit -> clear_graph ()
+  | Graphic_failure f -> clear_graph ()
   | _ -> clear_graph ()
+(* | _ -> clear_graph () *)
 (* idk why clear_graph works the best *)
 
 (** [init_game n] begins running the main game loop with the [n]
@@ -173,7 +175,11 @@ let init_game name starter =
   let trainer = init_trainer name starter in
   let st = init_state trainer in
   draw_room st;
-  let sp = make_image player in
+  let sp =
+    make_image
+      ("data/player.json" |> Yojson.Basic.from_file |> member "sprite"
+     |> to_list |> parse_list parse_color |> Array.of_list)
+  in
   let x, y = current_coord st in
   moveto (x, y);
   draw_image sp (x, y);
