@@ -17,7 +17,6 @@ type main_text_positions = {
   enemy : int * int;
 }
 
-(*test*)
 let main_text =
   {
     fight = (260, 70);

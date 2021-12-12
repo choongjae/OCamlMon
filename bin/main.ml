@@ -128,6 +128,8 @@ let battle st sp key =
       update_action st Walk
   | menu -> update_action st (Battle data)
 
+(*[menu st] opens up the menu options including bag and team *)
+
 (** [play st sp] is the main game loop for running OCamlMon, where [st]
     represents the current state that the player is in and [sp] is the
     player's sprite. *)
@@ -153,8 +155,8 @@ let rec play st sp =
           | 'd' ->
               let next = move st (x, y) (x + 25, y) sp tile_color in
               play next sp
-          | 'e' ->
-              print_endline "Opening Inventory";
+          | 'm' ->
+              print_endline "Opening Menu";
               play st sp
           | _ -> play st sp
         end

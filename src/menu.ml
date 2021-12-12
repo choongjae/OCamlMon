@@ -3,8 +3,11 @@ open Drawing
 open Pokemon
 open Trainer
 
-type battle_data = {
-  
+type m = Team of int | Bag of int
+
+type menu_data = {
+  trainer : trainer;
+  menu : m
 }
 let init_menu trainer = 
   set_color 0xf1c40f;
