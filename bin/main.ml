@@ -74,6 +74,7 @@ let encounter st =
     | None -> st
   else st
 
+(*test*)
 (** [test_print_poke n] prints a random Pokemon encounter depending on state
     [n] if it occurs. Using for testing purposes before implementing battle
     engine *)
