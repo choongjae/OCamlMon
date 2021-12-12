@@ -36,4 +36,8 @@ let draw_text (x, y) s =
   moveto (x, y);
   draw_string s
 
+let print_bold s = ANSITerminal.print_string [ Bold ] s
+
+let print_emph col s = ANSITerminal.print_string [ Bold; Foreground col ] s
+
 let print s = print_endline s

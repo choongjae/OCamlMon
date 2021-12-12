@@ -49,6 +49,7 @@ val geodude_moves : pmove list
 val o_moves : pmove list
 
 type pokemon_stats = {
+  health : int;
   level : int;
   xp : int;
 }

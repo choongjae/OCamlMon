@@ -105,7 +105,7 @@ let generate_pokemon tileT =
            name = snd (extract typeP);
            t_poke = fst (extract typeP);
            moves = move_list;
-           stats = { level = l; xp = (l * 10) + Random.int 10 };
+           stats = { health = 30; level = l; xp = (l * 10) + Random.int 10 };
          })
 
 let get_color_string = function

@@ -67,7 +67,9 @@ let encounter st =
   if generate_encounter () then
     match generate_pokemon tile with
     | Some poke ->
-        let action = init_battle [ poke ] (get_color tile) in
+        let action =
+          init_battle (current_trainer st) [ poke ] (get_color tile)
+        in
         update_action st (Battle action)
     | None -> st
   else st
@@ -112,15 +114,13 @@ let move st (x0, y0) (x1, y1) sp fill =
     encounter st')
   else st
 
-(* let change_battle_menu st key = *)
-
 let switch_to_room st sp =
   draw_room st;
   draw_image sp (current_coord st)
 
 let battle st sp key =
   let b = current_battle st in
-  let data = update_battle_menu b key in
+  let data = update_battle_menu (current_trainer st) b key in
   match data.menu with
   | Flee ->
       switch_to_room st sp;
@@ -134,79 +134,120 @@ let rec play st sp =
   try
     let status = wait_next_event [ Key_pressed ] in
     if status.keypressed then
-      if status.key = 'q' then raise Exit
-      else
-        match current_action st with
-        | Walk -> begin
-            let x, y = current_coord st in
-            let tile_color =
-              get_color (get_tile (x, y) (current_room st))
-            in
-            match status.key with
-            | 'w' ->
-                let next = move st (x, y) (x, y + 25) sp tile_color in
-                play next sp
-            | 'a' ->
-                let next = move st (x, y) (x - 25, y) sp tile_color in
-                play next sp
-            | 's' ->
-                let next = move st (x, y) (x, y - 25) sp tile_color in
-                play next sp
-            | 'd' ->
-                let next = move st (x, y) (x + 25, y) sp tile_color in
-                play next sp
-            | 'e' ->
-                print_endline "Opening Inventory";
-                play st sp
-            | _ -> play st sp
-          end
-        | Battle p -> play (battle st sp status.key) sp
-        | Menu -> failwith "Unimplemented"
-        | Talk -> failwith "Unimplemented"
+      (* if status.key = 'q' then raise Exit else *)
+      match current_action st with
+      | Walk -> begin
+          let x, y = current_coord st in
+          let tile_color = get_color (get_tile (x, y) (current_room st)) in
+          match status.key with
+          | 'w' ->
+              let next = move st (x, y) (x, y + 25) sp tile_color in
+              play next sp
+          | 'a' ->
+              let next = move st (x, y) (x - 25, y) sp tile_color in
+              play next sp
+          | 's' ->
+              let next = move st (x, y) (x, y - 25) sp tile_color in
+              play next sp
+          | 'd' ->
+              let next = move st (x, y) (x + 25, y) sp tile_color in
+              play next sp
+          | 'e' ->
+              print_endline "Opening Inventory";
+              play st sp
+          | _ -> play st sp
+        end
+      | Battle p -> play (battle st sp status.key) sp
+      | Menu -> failwith "Unimplemented"
+      | Talk -> failwith "Unimplemented"
   with
   | Exit -> clear_graph ()
+  | _ -> clear_graph ()
 (* idk why clear_graph works the best *)
 
 (** [init_game n] begins running the main game loop with the [n]
     customization details that the user provided. *)
-let init_game name =
+let init_game name starter =
   open_graph " 500x500";
   set_window_title "OCamlMon";
-  let trainer = { name = "Test"; team = [] } in
-  let curr_state = init_state trainer in
-  draw_room curr_state;
+  let trainer = init_trainer name starter in
+  let st = init_state trainer in
+  draw_room st;
   let sp = make_image player in
-  let x, y = current_coord curr_state in
+  let x, y = current_coord st in
   moveto (x, y);
   draw_image sp (x, y);
-  play curr_state sp
+  play st sp
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let rec main () =
   let name = name () in
-  let starter = starter name in
-  init_game name
+  let starter = starter name false in
+  confirm name starter;
+  init_game name starter
 
 and name () =
-  ANSITerminal.print_string [ ANSITerminal.red ]
-    "\nWelcome to the world of OCámlMon! \n";
-  print_endline "What's your name?";
+  ANSITerminal.print_string [ Bold ]
+    " \n\n\n\n\n\
+    \     ██████╗  ██████╗ █████╗ ███╗   ███╗██╗     ███╗   ███╗ ██████╗ \
+     ███╗   ██╗\n\
+    \    ██╔═══██╗██╔════╝██╔══██╗████╗ ████║██║     ████╗ \
+     ████║██╔═══██╗████╗  ██║\n\
+    \    ██║   ██║██║     ███████║██╔████╔██║██║     ██╔████╔██║██║   \
+     ██║██╔██╗ ██║\n\
+    \    ██║   ██║██║     ██╔══██║██║╚██╔╝██║██║     ██║╚██╔╝██║██║   \
+     ██║██║╚██╗██║\n\
+    \    ╚██████╔╝╚██████╗██║  ██║██║ ╚═╝ ██║███████╗██║ ╚═╝ \
+     ██║╚██████╔╝██║ ╚████║\n\
+    \     ╚═════╝  ╚═════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝     ╚═╝ ╚═════╝ \
+     ╚═╝  ╚═══╝\n\
+    \    ";
+  print_bold "\nWelcome to the world of ";
+  print_emph ANSITerminal.Red "OCamlMon! \n \n";
+  print_string "What's your ";
+  print_emph ANSITerminal.Yellow "name? \n";
   print_string "> ";
   match read_line () with
   | name -> name
   | exception End_of_file -> name ()
 
-and starter name =
-  print_endline (name ^ "! Nice to meet you!");
-  print_endline
-    "Now, you have a choice. Which starter Pokemon would you like?";
-  print_endline "Pikachu     Squirtle     Bulbasaur    Charmander";
+and starter name repeated =
+  if not repeated then (
+    print_newline ();
+    print_emph ANSITerminal.Green name;
+    print_endline "! Nice to meet you!";
+    print_endline
+      "Now, you have a choice. Which starter Pokemon would you like?\n")
+  else (
+    print_newline ();
+    print_string "Sorry, ";
+    print_emph ANSITerminal.Green name;
+    print_string ". I didn't understand that. \n";
+    print_endline "Do you mind saying which Pokemon you would like again?\n");
+  print_emph ANSITerminal.Blue "Squirtle     ";
+  print_emph ANSITerminal.Green "Bulbasaur    ";
+  print_emph ANSITerminal.Red "Charmander    ";
+
+  print_emph ANSITerminal.Yellow "Pikachu     \n";
+  print_string "> ";
   match read_line () with
   | s -> begin
       try make_starter_pokemon (String.lowercase_ascii s) with
-      | Failure f -> starter name
+      | Failure f -> starter name true
     end
-  | exception End_of_file -> starter name
+  | exception End_of_file -> starter name true
+
+and confirm name starter =
+  print_newline ();
+  print_emph ANSITerminal.Blue (string_of_poke starter.t_poke);
+  print_endline " – that's a great choice. \n";
+  print_string "Well, ";
+  print_emph ANSITerminal.Green name;
+  print_endline ", I hope you're ready to go an adventure!\n";
+  print_endline "Enter any character to enter the world of OCamlMon!";
+  print_string "> ";
+  match read_line () with
+  | _ -> ()
 
 (* Execute the game engine. *)
 let () = main ()

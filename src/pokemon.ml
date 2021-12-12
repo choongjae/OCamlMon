@@ -53,6 +53,7 @@ let geodude_moves = [ Tackle; RockThrow; Earthquake; Explosion ]
 let o_moves = [ Encapsulate; Abstract; RaiseFail ]
 
 type pokemon_stats = {
+  health : int;
   level : int;
   xp : int;
 }
@@ -69,7 +70,7 @@ let pokemonEx =
     name = "blah";
     t_poke = Squirtle;
     moves = [ Tackle ];
-    stats = { level = 5; xp = 50 };
+    stats = { health = 30; level = 5; xp = 50 };
   }
 
 let make_starter_pokemon = function
@@ -78,28 +79,28 @@ let make_starter_pokemon = function
         name = "Pikachu";
         t_poke = Pikachu;
         moves = pikachu_moves;
-        stats = { level = 1; xp = 0 };
+        stats = { health = 30; level = 1; xp = 0 };
       }
   | "squirtle" ->
       {
         name = "Squirtle";
         t_poke = Squirtle;
         moves = squirtle_moves;
-        stats = { level = 1; xp = 0 };
+        stats = { health = 30; level = 1; xp = 0 };
       }
   | "bulbasaur" ->
       {
         name = "Bulbasaur";
         t_poke = Bulbasaur;
         moves = bulb_moves;
-        stats = { level = 1; xp = 0 };
+        stats = { health = 30; level = 1; xp = 0 };
       }
   | "charmander" ->
       {
         name = "Charmander";
         t_poke = Charmander;
         moves = charmander_moves;
-        stats = { level = 1; xp = 0 };
+        stats = { health = 30; level = 1; xp = 0 };
       }
   | _ -> failwith "Not a starter Pokemon"
 

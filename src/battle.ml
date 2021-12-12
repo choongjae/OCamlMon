@@ -106,6 +106,7 @@ type battle_menu =
   | Flee
 
 type battle_data = {
+  friend : pokemon;
   enemy : pokemon;
   enemy_team : pokemon list;
   menu : battle_menu;
@@ -123,8 +124,9 @@ let draw_battle_text top bottom =
       draw_text (25, 55) top;
       draw_text (25, 35) bot
 
-let draw_menu_main selector =
+let draw_menu_main selector from_main =
   auto_synchronize false;
+  if not from_main then fill_draw_rect (0, 0) 500 100 white black;
   fill_draw_rect (250, 0) 125 50 white black;
   fill_draw_rect (375, 0) 125 50 white black;
   fill_draw_rect (250, 50) 125 50 white black;
@@ -141,14 +143,21 @@ let draw_menu_main selector =
   | _ -> ());
   auto_synchronize true
 
-let draw_menu_fight selector =
+let draw_moves battle =
+  let moves = battle.friend.moves in
+  match moves with
+  | [ m1; m2; m3; m4 ] ->
+      draw_text move_text.first (pmove_to_string m1);
+      draw_text move_text.second (pmove_to_string m2);
+      draw_text move_text.third (pmove_to_string m3);
+      draw_text move_text.fourth (pmove_to_string m4)
+  | _ -> failwith "Error: Not enough moves"
+
+let draw_menu_fight trainer battle selector =
   auto_synchronize false;
   fill_draw_rect (0, 0) 400 100 white black;
   fill_draw_rect (400, 0) 100 100 white black;
-  draw_text move_text.first "First move";
-  draw_text move_text.second "Second move";
-  draw_text move_text.third "Third move";
-  draw_text move_text.fourth "Fourth move";
+  draw_moves battle;
   (match selector with
   | 1 -> draw_circle move_circle.first 5
   | 2 -> draw_circle move_circle.second 5
@@ -157,26 +166,36 @@ let draw_menu_fight selector =
   | _ -> ());
   auto_synchronize true
 
-let draw_menu_bag selector =
+let draw_menu_bag (trainer : Trainer.trainer) selector =
   auto_synchronize false;
   fill_draw_rect (0, 0) 500 100 white black;
-  draw_text bag_text.potions "_ Potions";
-  draw_text bag_text.pokeballs "_ Pokeballs";
+  draw_text bag_text.potions (string_of_int (fst trainer.bag) ^ " Potions");
+  draw_text bag_text.pokeballs
+    (string_of_int (snd trainer.bag) ^ " Pokeballs");
   (match selector with
   | 1 -> draw_circle bag_circle.potions 5
   | 2 -> draw_circle bag_circle.pokeballs 5
   | _ -> ());
   auto_synchronize true
 
-let draw_menu_team selector =
+let rec draw_team acc = function
+  | [] -> ()
+  | h :: t ->
+      let name = h.name in
+      (match acc with
+      | 1 -> draw_text team_text.one name
+      | 2 -> draw_text team_text.two name
+      | 3 -> draw_text team_text.three name
+      | 4 -> draw_text team_text.four name
+      | 5 -> draw_text team_text.five name
+      | 6 -> draw_text team_text.six name
+      | _ -> ());
+      draw_team (acc + 1) t
+
+let draw_menu_team trainer selector =
   auto_synchronize false;
   fill_draw_rect (0, 0) 500 100 white black;
-  draw_text team_text.one "Pokemon 1";
-  draw_text team_text.two "Pokemon 2";
-  draw_text team_text.three "Pokemon 3";
-  draw_text team_text.four "Pokemon 4";
-  draw_text team_text.five "Pokemon 5";
-  draw_text team_text.six "Pokemon 6";
+  draw_team 1 (Trainer.current_team trainer);
   (match selector with
   | 1 -> draw_circle team_circle.one 5
   | 2 -> draw_circle team_circle.two 5
@@ -187,14 +206,18 @@ let draw_menu_team selector =
   | _ -> ());
   auto_synchronize true
 
-let init_battle enemy_team bg_color =
+let rec next_valid_pokemon = function
+  | [] -> failwith "Error: No valid Pokemon"
+  | h :: t -> if h.stats.health > 0 then h else next_valid_pokemon t
+
+let init_battle trainer enemy_team bg_color =
   auto_synchronize false;
   clear_graph ();
   set_color bg_color;
   fill_rect (0, 0) 500 500;
   set_color black;
   (* DRAWING BOTTOM MENU *)
-  draw_menu_main 3;
+  draw_menu_main 1 true;
   (* DRAWING POKEMON RECTANGLES*)
   fill_draw_rect (50, 125) 150 150 white black;
   fill_draw_rect (300, 325) 150 150 white black;
@@ -204,22 +227,28 @@ let init_battle enemy_team bg_color =
   draw_battle_text "You run into a wild Pokemon!" "What will you do?";
   auto_synchronize true;
   match enemy_team with
-  | h :: t -> { enemy = h; enemy_team = t; menu = Main 3 }
+  | h :: t ->
+      {
+        friend = next_valid_pokemon (Trainer.current_team trainer);
+        enemy = h;
+        enemy_team = t;
+        menu = Main 1;
+      }
   | _ -> failwith "init_battle battle.ml: No team"
 
 (* let move_main_pointer *)
-let interact_menu battle menu =
+let interact_menu trainer battle menu =
   match menu with
   | Main pos -> begin
       match pos with
       | 1 ->
-          draw_menu_fight 1;
+          draw_menu_fight trainer battle 1;
           { battle with menu = Fight 1 }
       | 2 ->
-          draw_menu_bag 1;
+          draw_menu_bag trainer 1;
           { battle with menu = Bag 1 }
       | 3 ->
-          draw_menu_team 1;
+          draw_menu_team trainer 1;
           { battle with menu = OCamlMon 1 }
       | 4 -> { battle with menu = Flee }
       | _ ->
@@ -233,66 +262,79 @@ let interact_menu battle menu =
 
 let update_main_menu battle pos (cond1, cond2) delta =
   if pos = cond1 || pos = cond2 then (
-    draw_menu_main (pos + delta);
+    draw_menu_main (pos + delta) true;
     { battle with menu = Main (pos + delta) })
   else battle
 
-let update_fight_menu battle pos (cond1, cond2) delta =
+let update_fight_menu trainer battle pos (cond1, cond2) delta =
   if pos = cond1 || pos = cond2 then (
-    draw_menu_fight (pos + delta);
+    draw_menu_fight trainer battle (pos + delta);
     { battle with menu = Fight (pos + delta) })
   else battle
 
-let update_bag_menu battle pos =
+let update_bag_menu trainer battle pos =
   let pos = if pos = 1 then 2 else 1 in
-  draw_menu_bag pos;
+  draw_menu_bag trainer pos;
   { battle with menu = Bag pos }
 
-let update_team_menu battle pos (cond1, cond2, cond3, cond4) delta =
+let update_team_menu trainer battle pos (cond1, cond2, cond3, cond4) delta =
   if pos = cond1 || pos = cond2 || pos = cond3 || pos = cond4 then (
-    draw_menu_team (pos + delta);
+    draw_menu_team trainer (pos + delta);
     { battle with menu = OCamlMon (pos + delta) })
   else battle
 
-let update_battle_menu battle key =
+let go_back_menu battle menu =
+  match menu with
+  | Fight _
+  | Bag _
+  | OCamlMon _ ->
+      draw_menu_main 1 false;
+      { battle with menu = Main 1 }
+  | Main _
+  | Flee ->
+      battle
+
+let update_battle_menu trainer battle key =
   let b_menu = battle.menu in
   match key with
   | 'w' -> begin
       match b_menu with
       | Main pos -> update_main_menu battle pos (3, 4) ~-2
-      | Fight pos -> update_fight_menu battle pos (3, 4) ~-2
+      | Fight pos -> update_fight_menu trainer battle pos (3, 4) ~-2
       | Bag pos -> battle
-      | OCamlMon pos -> update_team_menu battle pos (4, 5, 6, 6) ~-3
+      | OCamlMon pos -> update_team_menu trainer battle pos (4, 5, 6, 6) ~-3
       | _ -> failwith "Impossible?"
     end
   | 'a' -> begin
       match b_menu with
       | Main pos -> update_main_menu battle pos (2, 4) ~-1
-      | Fight pos -> update_fight_menu battle pos (2, 4) ~-1
-      | Bag pos -> update_bag_menu battle pos
-      | OCamlMon pos -> update_team_menu battle pos (2, 3, 5, 6) ~-1
+      | Fight pos -> update_fight_menu trainer battle pos (2, 4) ~-1
+      | Bag pos -> update_bag_menu trainer battle pos
+      | OCamlMon pos -> update_team_menu trainer battle pos (2, 3, 5, 6) ~-1
       | _ -> failwith "Impossible?"
     end
   | 's' -> begin
       match b_menu with
       | Main pos -> update_main_menu battle pos (1, 2) 2
-      | Fight pos -> update_fight_menu battle pos (1, 2) 2
+      | Fight pos -> update_fight_menu trainer battle pos (1, 2) 2
       | Bag pos -> battle
-      | OCamlMon pos -> update_team_menu battle pos (1, 2, 3, 3) 3
+      | OCamlMon pos -> update_team_menu trainer battle pos (1, 2, 3, 3) 3
       | _ -> failwith "Impossible?"
     end
   | 'd' -> begin
       match b_menu with
       | Main pos -> update_main_menu battle pos (1, 3) 1
-      | Fight pos -> update_fight_menu battle pos (1, 3) 1
-      | Bag pos -> update_bag_menu battle pos
-      | OCamlMon pos -> update_team_menu battle pos (1, 2, 4, 5) 1
+      | Fight pos -> update_fight_menu trainer battle pos (1, 3) 1
+      | Bag pos -> update_bag_menu trainer battle pos
+      | OCamlMon pos -> update_team_menu trainer battle pos (1, 2, 4, 5) 1
       | _ -> failwith "Impossible?"
     end
-  | 'e' -> interact_menu battle b_menu
+  | 'e' -> interact_menu trainer battle b_menu
+  | 'q' -> go_back_menu battle b_menu
   | _ -> battle
 
-(* let run_battle st = function | "w" -> failwith "Unimp" | "a" -> failwith
-   "Unimp" | "s" -> failwith "Unimp" | "d" -> failwith "Unimp" | _ -> st *)
+(* let run_battle trainer = function | "w" -> failwith "Unimp" | "a" ->
+   failwith "Unimp" | "s" -> failwith "Unimp" | "d" -> failwith "Unimp" | _
+   -> trainer *)
 
 (* 1 2 3 4 *)
