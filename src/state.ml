@@ -2,11 +2,12 @@ open Room
 open Trainer
 open Pokemon
 open Battle
+open Menu
 
 type action =
   | Battle of battle_data
   | Walk
-  | Menu
+  | Menu of menu_data
   | Talk
 
 type t = {

@@ -9,6 +9,7 @@ open Trainer
 open Pokemon
 open Drawing
 open Battle
+open Menu
 
 let mainWorldlist = []
 
