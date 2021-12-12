@@ -74,7 +74,6 @@ let encounter st =
         update_action st (Battle action)
     | None -> st
   else st
-
 (** [test_print_poke n] prints a random Pokemon encounter depending on state
     [n] if it occurs. Using for testing purposes before implementing battle
     engine *)
@@ -129,6 +128,17 @@ let battle st sp key =
   | menu -> update_action st (Battle data)
 
 (*[menu st] opens up the menu options including bag and team *)
+let open_menu st = 
+  let action = init_menu (current_trainer st) in 
+  update_action st (Menu action)
+
+let menu st sp key m= 
+  let data = update_menu (current_trainer st) key (m) in
+  match key with 
+  |'q' -> if data.menu = Team|| data.menu = Bag then open_menu st else
+          (switch_to_room st sp;
+          update_action st Walk)
+  |_ -> update_action st (Menu data)
 
 (** [play st sp] is the main game loop for running OCamlMon, where [st]
     represents the current state that the player is in and [sp] is the
@@ -155,13 +165,12 @@ let rec play st sp =
           | 'd' ->
               let next = move st (x, y) (x + 25, y) sp tile_color in
               play next sp
-          | 'm' ->
-              print_endline "Opening Menu";
-              play st sp
+          | 'e' ->
+              play (open_menu st) sp
           | _ -> play st sp
         end
       | Battle p -> play (battle st sp status.key) sp
-      | Menu _ -> failwith "Unimplemented"
+      | Menu m -> play (menu st sp status.key m) sp
       | Talk -> failwith "Unimplemented"
   with
   | Exit -> clear_graph ()
