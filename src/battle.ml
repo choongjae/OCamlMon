@@ -2,9 +2,12 @@
 (* Friendly status -> Player's pokemon status bar *)
 (* Enemy status -> Enemy pokemon status bar *)
 (* Menu -> Menu navigation in bottom right - Fight, Bag, OCamlMon, Run *)
+open Yojson.Basic.Util
 open Graphics
 open Drawing
+open Parser
 open Pokemon
+open State
 
 (* CONSTANTS *)
 
@@ -98,19 +101,11 @@ let team_circle =
     six = (310, 31);
   }
 
-type battle_menu =
-  | Main of int
-  | Fight of int
-  | Bag of int
-  | OCamlMon of int
-  | Flee
+(* type battle_menu = | Main of int | Fight of int | Bag of int | OCamlMon
+   of int | Flee
 
-type battle_data = {
-  friend : pokemon;
-  enemy : pokemon;
-  enemy_team : pokemon list;
-  menu : battle_menu;
-}
+   type battle_data = { friend : pokemon; enemy : pokemon; enemy_team :
+   pokemon list; menu : battle_menu; } *)
 
 (* END CONSTANTS *)
 
@@ -147,10 +142,10 @@ let draw_moves battle =
   let moves = battle.friend.moves in
   match moves with
   | [ m1; m2; m3; m4 ] ->
-      draw_text move_text.first (pmove_to_string m1);
-      draw_text move_text.second (pmove_to_string m2);
-      draw_text move_text.third (pmove_to_string m3);
-      draw_text move_text.fourth (pmove_to_string m4)
+      draw_text move_text.first (string_of_move m1);
+      draw_text move_text.second (string_of_move m2);
+      draw_text move_text.third (string_of_move m3);
+      draw_text move_text.fourth (string_of_move m4)
   | _ -> failwith "Error: Not enough moves"
 
 let draw_menu_fight trainer battle selector =
@@ -210,7 +205,46 @@ let rec next_valid_pokemon = function
   | [] -> failwith "Error: No valid Pokemon"
   | h :: t -> if h.stats.health > 0 then h else next_valid_pokemon t
 
+let draw_friend pokemon =
+  draw_image
+    (image_from_json "pokemon.json" (string_of_species pokemon.species))
+    (50, 125)
+
+let draw_enemy pokemon =
+  draw_image
+    (image_from_json "pokemon.json" (string_of_species pokemon.species))
+    (300, 325)
+
+let ( /. ) x y = float_of_int x /. float_of_int y
+
+let draw_poke_status (x, y) pokemon =
+  draw_text (x + 10, y + 50) (string_of_pokemon pokemon);
+  draw_text (x + 220, y + 50) ("Lv" ^ string_of_int pokemon.stats.level);
+  draw_text
+    (x + 175, y + 10)
+    (string_of_int pokemon.stats.health
+    ^ " / "
+    ^ string_of_int pokemon.stats.maxhealth);
+  set_color green;
+  fill_rect
+    (x + 75, y + 25)
+    (int_of_float
+       (150. *. (pokemon.stats.health /. pokemon.stats.maxhealth)))
+    10;
+  draw_rect (x + 75, y + 25) 100 10
+
 let init_battle trainer enemy_team bg_color =
+  let data =
+    match enemy_team with
+    | h :: t ->
+        {
+          friend = next_valid_pokemon (Trainer.current_team trainer);
+          enemy = h;
+          enemy_team = t;
+          menu = Main 1;
+        }
+    | _ -> failwith "init_battle battle.ml: No team"
+  in
   auto_synchronize false;
   clear_graph ();
   set_color bg_color;
@@ -220,24 +254,20 @@ let init_battle trainer enemy_team bg_color =
   draw_menu_main 1 true;
   (* DRAWING POKEMON RECTANGLES*)
   fill_draw_rect (50, 125) 150 150 white black;
+  draw_friend data.friend;
   fill_draw_rect (300, 325) 150 150 white black;
+  draw_enemy data.friend;
   (* DRAWING POKEMON STATUS BARS *)
   fill_draw_rect (250, 150) 250 75 white black;
+  draw_poke_status (250, 150) data.friend;
   fill_draw_rect (0, 375) 250 75 white black;
+  draw_poke_status (0, 375) data.friend;
   draw_battle_text "You run into a wild Pokemon!" "What will you do?";
   auto_synchronize true;
-  match enemy_team with
-  | h :: t ->
-      {
-        friend = next_valid_pokemon (Trainer.current_team trainer);
-        enemy = h;
-        enemy_team = t;
-        menu = Main 1;
-      }
-  | _ -> failwith "init_battle battle.ml: No team"
+  data
 
 (* let move_main_pointer *)
-let interact_menu trainer battle menu =
+let interact_menu st trainer battle menu =
   match menu with
   | Main pos -> begin
       match pos with
@@ -294,7 +324,7 @@ let go_back_menu battle menu =
   | Flee ->
       battle
 
-let update_battle_menu trainer battle key =
+let update_battle_menu st trainer battle key =
   let b_menu = battle.menu in
   match key with
   | 'w' -> begin
@@ -329,7 +359,7 @@ let update_battle_menu trainer battle key =
       | OCamlMon pos -> update_team_menu trainer battle pos (1, 2, 4, 5) 1
       | _ -> failwith "Impossible?"
     end
-  | 'e' -> interact_menu trainer battle b_menu
+  | 'e' -> interact_menu st trainer battle b_menu
   | 'q' -> go_back_menu battle b_menu
   | _ -> battle
 

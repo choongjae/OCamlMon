@@ -1,4 +1,4 @@
-type p =
+type species =
   | Pikachu
   | Bulbasaur
   | Squirtle
@@ -8,8 +8,18 @@ type p =
   | Geodude
   | O
 
-type pmove =
-  | TailWhip
+type element =
+  | Fire
+  | Water
+  | Grass
+  | Electric
+  | Normal
+  | Bug
+  | Rock
+  | Camel
+
+type move =
+  | Slam
   | ThunderShock
   | QuickAttack
   | ElectroBall
@@ -24,19 +34,19 @@ type pmove =
   | Ember
   | Flamethrower
   | Inferno
-  | Bugbite
-  | StringShot
-  | SandAttack
-  | GyroBall
-  | SandStorm
+  | BugBite
+  | Twineedle
+  | PinMissile
+  | LeechLife
   | RockThrow
   | Earthquake
   | Explosion
   | Encapsulate
   | Abstract
   | RaiseFail
+  | TypeCheck
 
-let pikachu_moves = [ TailWhip; ThunderShock; QuickAttack; ElectroBall ]
+let pikachu_moves = [ Slam; ThunderShock; QuickAttack; ElectroBall ]
 
 let bulb_moves = [ Tackle; VineWhip; RazorLeaf; SolarBeam ]
 
@@ -44,67 +54,65 @@ let squirtle_moves = [ Tackle; WaterGun; WaterPulse; HydroPump ]
 
 let charmander_moves = [ Scratch; Ember; Flamethrower; Inferno ]
 
-let caterpie_moves = [ Tackle; Bugbite; StringShot ]
+let caterpie_moves = [ Tackle; BugBite ]
 
-let sand_moves = [ Tackle; SandAttack; GyroBall; SandStorm ]
+let sand_moves = [ Tackle ]
 
 let geodude_moves = [ Tackle; RockThrow; Earthquake; Explosion ]
 
 let o_moves = [ Encapsulate; Abstract; RaiseFail ]
 
-type pokemon_stats = {
+type stats = {
   health : int;
+  maxhealth : int;
   level : int;
   xp : int;
 }
 
 type pokemon = {
   name : string;
-  t_poke : p;
-  moves : pmove list;
-  stats : pokemon_stats;
+  species : species;
+  element : element;
+  moves : move list;
+  stats : stats;
 }
-
-let pokemonEx =
-  {
-    name = "blah";
-    t_poke = Squirtle;
-    moves = [ Tackle ];
-    stats = { health = 30; level = 5; xp = 50 };
-  }
 
 let make_starter_pokemon = function
   | "pikachu" ->
       {
         name = "Pikachu";
-        t_poke = Pikachu;
+        species = Pikachu;
+        element = Electric;
         moves = pikachu_moves;
-        stats = { health = 30; level = 1; xp = 0 };
+        stats = { health = 30; maxhealth = 30; level = 5; xp = 0 };
       }
   | "squirtle" ->
       {
         name = "Squirtle";
-        t_poke = Squirtle;
+        species = Squirtle;
+        element = Electric;
         moves = squirtle_moves;
-        stats = { health = 30; level = 1; xp = 0 };
+        stats = { health = 30; maxhealth = 30; level = 5; xp = 0 };
       }
   | "bulbasaur" ->
       {
         name = "Bulbasaur";
-        t_poke = Bulbasaur;
+        species = Bulbasaur;
+        element = Electric;
         moves = bulb_moves;
-        stats = { health = 30; level = 1; xp = 0 };
+        stats = { health = 30; maxhealth = 30; level = 5; xp = 0 };
       }
   | "charmander" ->
       {
         name = "Charmander";
-        t_poke = Charmander;
+        species = Charmander;
+        element = Electric;
         moves = charmander_moves;
-        stats = { health = 30; level = 1; xp = 0 };
+        stats = { health = 30; maxhealth = 30; level = 5; xp = 0 };
       }
   | _ -> failwith "Not a starter Pokemon"
 
-let string_of_poke = function
+let string_of_species = function
   | Pikachu -> "Pikachu"
   | Bulbasaur -> "Bulbasaur"
   | Squirtle -> "Squirtle"
@@ -114,7 +122,23 @@ let string_of_poke = function
   | Geodude -> "Geodude"
   | O -> "O"
 
-let pmove_to_string = function
+let string_of_element = function
+  | Fire -> "Fire"
+  | Water -> "Water"
+  | Grass -> "Grass"
+  | Electric -> "Electric"
+  | Normal -> "Normal"
+  | Bug -> "Bug"
+  | Rock -> "Rock"
+  | Camel -> "Camel"
+
+let string_of_pokemon pokemon = pokemon.name
+
+let string_of_move = function
+  | Slam -> "Slam"
+  | ThunderShock -> "Thunder Shock"
+  | QuickAttack -> "Quick Attack"
+  | ElectroBall -> "Electro Ball"
   | Tackle -> "Tackle"
   | VineWhip -> "Vine Whip"
   | RazorLeaf -> "Razor Leaf"
@@ -122,14 +146,18 @@ let pmove_to_string = function
   | WaterGun -> "Water Gun"
   | WaterPulse -> "Water Pulse"
   | HydroPump -> "Hydro Pump"
-  | Bugbite -> "Bugbite"
-  | StringShot -> "String Shot"
-  | SandAttack -> "Sand Attack"
-  | GyroBall -> "Gyro Ball"
-  | SandStorm -> "Sand Storm"
+  | Scratch -> "Scratch"
+  | Ember -> "Ember"
+  | Flamethrower -> "Flamethrower"
+  | Inferno -> "Inferno"
+  | BugBite -> "Bug Bite"
+  | Twineedle -> "Twineedle"
+  | PinMissile -> "Pin Missile"
+  | LeechLife -> "Leech Life"
   | RockThrow -> "Rock Throw"
   | Earthquake -> "Earthquake"
   | Explosion -> "Explosion"
   | Encapsulate -> "Encapsulate"
   | Abstract -> "Abstract"
   | RaiseFail -> "Raise Fail"
+  | TypeCheck -> "Type Check"

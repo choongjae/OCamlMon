@@ -1,4 +1,4 @@
-type p =
+type species =
   | Pikachu
   | Bulbasaur
   | Squirtle
@@ -8,8 +8,18 @@ type p =
   | Geodude
   | O
 
-type pmove =
-  | TailWhip
+type element =
+  | Fire
+  | Water
+  | Grass
+  | Electric
+  | Normal
+  | Bug
+  | Rock
+  | Camel
+
+type move =
+  | Slam
   | ThunderShock
   | QuickAttack
   | ElectroBall
@@ -24,45 +34,51 @@ type pmove =
   | Ember
   | Flamethrower
   | Inferno
-  | Bugbite
-  | StringShot
-  | SandAttack
-  | GyroBall
-  | SandStorm
+  | BugBite
+  | Twineedle
+  | PinMissile
+  | LeechLife
   | RockThrow
   | Earthquake
   | Explosion
   | Encapsulate
   | Abstract
   | RaiseFail
+  | TypeCheck
 
-val bulb_moves : pmove list
+val bulb_moves : move list
 
-val squirtle_moves : pmove list
+val squirtle_moves : move list
 
-val caterpie_moves : pmove list
+val caterpie_moves : move list
 
-val sand_moves : pmove list
+val sand_moves : move list
 
-val geodude_moves : pmove list
+val geodude_moves : move list
 
-val o_moves : pmove list
+val o_moves : move list
 
-type pokemon_stats = {
+type stats = {
   health : int;
+  maxhealth : int;
   level : int;
   xp : int;
 }
 
 type pokemon = {
   name : string;
-  t_poke : p;
-  moves : pmove list;
-  stats : pokemon_stats;
+  species : species;
+  element : element;
+  moves : move list;
+  stats : stats;
 }
 
 val make_starter_pokemon : string -> pokemon
 
-val string_of_poke : p -> string
+val string_of_species : species -> string
 
-val pmove_to_string : pmove -> string
+val string_of_pokemon : pokemon -> string
+
+val string_of_element : element -> string
+
+val string_of_move : move -> string

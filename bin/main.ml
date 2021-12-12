@@ -121,7 +121,7 @@ let switch_to_room st sp =
 
 let battle st sp key =
   let b = current_battle st in
-  let data = update_battle_menu (current_trainer st) b key in
+  let data = update_battle_menu st (current_trainer st) b key in
   match data.menu with
   | Flee ->
       switch_to_room st sp;
@@ -248,7 +248,7 @@ and starter name repeated =
 
 and confirm name starter =
   print_newline ();
-  print_emph ANSITerminal.Blue (string_of_poke starter.t_poke);
+  print_emph ANSITerminal.Blue (string_of_species starter.species);
   print_endline " – that's a great choice. \n";
   print_string "Well, ";
   print_emph ANSITerminal.Green name;

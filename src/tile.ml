@@ -3,7 +3,7 @@ open Pokemon
 
 type t = {
   color : int;
-  encounters : p list;
+  encounters : species list;
 }
 
 type tile =
@@ -37,15 +37,15 @@ let generate_encounter () = generate_randomNum () > 9
 let type_pokemon = function
   | Grass _ ->
       if generate_randomNum () < 8 then
-        Some (Caterpie, string_of_poke Caterpie)
-      else Some (Bulbasaur, string_of_poke Bulbasaur)
+        Some (Caterpie, string_of_species Caterpie)
+      else Some (Bulbasaur, string_of_species Bulbasaur)
   | Sand _ ->
       if generate_randomNum () < 9 then
-        Some (Sandshrew, string_of_poke Sandshrew)
-      else Some (O, string_of_poke O)
-  | Water _ -> Some (Squirtle, string_of_poke Squirtle)
-  | Bushes _ -> Some (Bulbasaur, string_of_poke Bulbasaur)
-  | Rocks _ -> Some (Geodude, string_of_poke Geodude)
+        Some (Sandshrew, string_of_species Sandshrew)
+      else Some (O, string_of_species O)
+  | Water _ -> Some (Squirtle, string_of_species Squirtle)
+  | Bushes _ -> Some (Bulbasaur, string_of_species Bulbasaur)
+  | Rocks _ -> Some (Geodude, string_of_species Geodude)
   | Path _ -> None
 
 (**Generates a random moves based on the pokemon move list*)
@@ -103,9 +103,16 @@ let generate_pokemon tileT =
          let move_list = generate_move l (fst (extract typeP)) in
          {
            name = snd (extract typeP);
-           t_poke = fst (extract typeP);
+           species = fst (extract typeP);
+           element = Normal;
            moves = move_list;
-           stats = { health = 30; level = l; xp = (l * 10) + Random.int 10 };
+           stats =
+             {
+               health = 30;
+               maxhealth = 30;
+               level = l;
+               xp = (l * 10) + Random.int 10;
+             };
          })
 
 let get_color_string = function

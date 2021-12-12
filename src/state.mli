@@ -1,8 +1,21 @@
 open Room
 open Trainer
 open Pokemon
-open Battle
 open Menu
+
+type battle_menu =
+  | Main of int
+  | Fight of int
+  | Bag of int
+  | OCamlMon of int
+  | Flee
+
+type battle_data = {
+  friend : pokemon;
+  enemy : pokemon;
+  enemy_team : pokemon list;
+  menu : battle_menu;
+}
 
 type action =
   | Battle of battle_data
