@@ -61,13 +61,21 @@ let draw_pokecenter coord =
   in
   draw_image pokecenter coord
 
+let extract = function
+  | None -> failwith "extract error"
+  | Some v -> v
+
+let ipokecenter = ref None
+
 let draw_ipokecenter () =
-  let ipokecenter =
-    make_image
-      ("data/rooms.json" |> Yojson.Basic.from_file |> member "ipokecenter"
-     |> to_list |> parse_list parse_color |> Array.of_list)
-  in
-  draw_image ipokecenter (0, 0)
+  if !ipokecenter = None then
+    ipokecenter :=
+      Some
+        (make_image
+           ("data/rooms.json" |> Yojson.Basic.from_file
+          |> member "ipokecenter" |> to_list |> parse_list parse_color
+          |> Array.of_list));
+  draw_image (extract !ipokecenter) (0, 0)
 
 (** [draw_room arr] draws the tiles of the room array [arr] to the current
     graphics screen *)
