@@ -9,6 +9,7 @@ type room_id = string
 type exit = {
   name : string;
   coordinates : int * int;
+  player_coord : int * int; (*inital coordinate of player in new room*)
 }
 
 type room = {
@@ -44,10 +45,13 @@ let roomdata = "data/rooms.json" |> Yojson.Basic.from_file
     a room *)
 let exit_record exit =
   let exitcoords = exit |> member "coordinates" in
+  let playercoords = exit |> member "player_coord" in
   {
     name = exit |> member "name" |> to_string;
     coordinates =
       (index 0 exitcoords |> to_int, index 1 exitcoords |> to_int);
+    player_coord =
+      (index 0 playercoords |> to_int, index 1 playercoords |> to_int);
   }
 
 (** [parse_exits r] is the list of exit (records) corresponding to the room

@@ -45,17 +45,19 @@ let enter_room room (x, y) =
 (** [new_room_coords x y] is the position of the player of the next room
     after taking an exit. For instance, if the player exits to the right of
     a room, their start position of the next room will be on the left. *)
-let exit_coord (x, y) =
-  if x = -25 then (475, y)
-  else if x = 500 then (0, y)
-  else if y = -25 then (x, 475)
-  else (x, 0)
+let rec exit_coord (x, y) exit_list =
+  match exit_list with
+  | [] -> failwith "error with exits"
+  | h :: t ->
+      let the_exit = h.coordinates in
+      if the_exit = (x, y) then h.player_coord else exit_coord (x, y) t
 
 let draw_pokecenter coord =
   let pokecenter =
     make_image
-      ("data/rooms.json" |> Yojson.Basic.from_file |> member "pokecenter_building"
-     |> to_list |> parse_list parse_color |> Array.of_list)
+      ("data/rooms.json" |> Yojson.Basic.from_file
+      |> member "pokecenter_building"
+      |> to_list |> parse_list parse_color |> Array.of_list)
   in
   draw_image pokecenter coord
 
@@ -112,12 +114,15 @@ let move st (x0, y0) (x1, y1) sp fill =
   in
   if
     is_exit (x1, y1) (room_of_string room).exits
-    || ((x1 >= 0 && y1 >= 0 && x1 < 500 && y1 < 500)
-    && next_tile <> "Unwal" && next_tile <> "Build")
+    || (x1 >= 0 && y1 >= 0 && x1 < 500 && y1 < 500)
+       && next_tile <> "Unwal" && next_tile <> "Build"
   then (
     let trainer = current_trainer st in
     let room' = enter_room room (x1, y1) in
-    let x1, y1 = if room' = room then (x1, y1) else exit_coord (x1, y1) in
+    let x1, y1 =
+      if room' = room then (x1, y1)
+      else exit_coord (x1, y1) (room_of_string room).exits
+    in
     let st' = update_state room' (x1, y1) Walk trainer in
     let is_new_room = room' <> room in
     (* Need to do save this bool because I cant figure out to only have
