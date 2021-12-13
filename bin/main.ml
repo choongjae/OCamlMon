@@ -132,10 +132,14 @@ let open_menu st =
   let action = init_menu (current_trainer st) in 
   update_action st (Menu action)
 
+let open_trainer_menu st = 
+  draw_team_menu (current_trainer st);
+  update_action st (Menu {trainer = (current_trainer st); menu = Team; poke_box = 1})
 let menu st sp key m= 
   let data = update_menu (current_trainer st) key (m) in
   match key with 
-  |'q' -> if data.menu = Team|| data.menu = Bag then open_menu st else
+  |'q' -> if data.menu = Team|| data.menu = Bag then open_menu st else if 
+    data.menu = Poke then open_trainer_menu st else
           (switch_to_room st sp;
           update_action st Walk)
   |_ -> update_action st (Menu data)
