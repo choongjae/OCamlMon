@@ -61,6 +61,14 @@ let draw_pokecenter coord =
   in
   draw_image pokecenter coord
 
+let draw_ipokecenter () =
+  let ipokecenter =
+    make_image
+      ("data/rooms.json" |> Yojson.Basic.from_file |> member "ipokecenter"
+     |> to_list |> parse_list parse_color |> Array.of_list)
+  in
+  draw_image ipokecenter (0, 0)
+
 (** [draw_room arr] draws the tiles of the room array [arr] to the current
     graphics screen *)
 let draw_room st =
@@ -76,7 +84,8 @@ let draw_room st =
       if string_of_tile room_array.(row).(col) = "Build" then
         draw_pokecenter (col * 25, 500 - (25 * row))
     done
-  done
+  done;
+  if current_room st = "pokecenter" then draw_ipokecenter ()
 
 let encounter st =
   let room = current_room st in
@@ -130,9 +139,11 @@ let move st (x0, y0) (x1, y1) sp fill =
        out a better way feel free to change -CJ *)
     moveto (x1, y1);
     auto_synchronize false;
-    if is_new_room then draw_room st';
+    if is_new_room then draw_room st'
+    else if (not is_new_room) && room <> "pokecenter" then
+      draw_square (x0, y0) fill black
+    else if room = "pokecenter" then draw_room st';
     draw_image sp (x1, y1);
-    if not is_new_room then draw_square (x0, y0) fill black;
     auto_synchronize true;
     (* match encounter st' with | Some p -> print_endline p.name; st' | None
        -> st' *)

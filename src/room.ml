@@ -89,6 +89,7 @@ let room_layout = function
   | "town" -> town.layout
   | "cave" -> cave.layout
   | "beach" -> beach.layout
+  | "pokecenter" -> pokecenter.layout
   | _ -> failwith "No"
 
 (* let get_tile coord room_name = (room_layout room_name).((fst
@@ -102,4 +103,5 @@ let room_of_string = function
   | "town" -> town
   | "cave" -> cave
   | "beach" -> beach
+  | "pokecenter" -> pokecenter
   | _ -> failwith "No"
