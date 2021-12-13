@@ -51,6 +51,14 @@ let exit_coord (x, y) =
   else if y = -25 then (x, 475)
   else (x, 0)
 
+let draw_pokecenter coord =
+  let pokecenter =
+    make_image
+      ("data/rooms.json" |> Yojson.Basic.from_file |> member "pokecenter_building"
+     |> to_list |> parse_list parse_color |> Array.of_list)
+  in
+  draw_image pokecenter coord
+
 (** [draw_room arr] draws the tiles of the room array [arr] to the current
     graphics screen *)
 let draw_room st =
@@ -59,6 +67,12 @@ let draw_room st =
     for col = 0 to 20 do
       let fill = get_color room_array.(row).(col) in
       draw_square (col * 25, 500 - (25 * row)) fill black
+    done
+  done;
+  for row = 0 to 20 do
+    for col = 0 to 20 do
+      if string_of_tile room_array.(row).(col) = "Build" then
+        draw_pokecenter (col * 25, 500 - (25 * row))
     done
   done
 
@@ -92,9 +106,14 @@ let encounter st =
     sprite [sp] on the new tile. *)
 let move st (x0, y0) (x1, y1) sp fill =
   let room = current_room st in
+  let next_tile =
+    try string_of_tile (get_tile (x1, y1) room) with
+    | Invalid_argument _ -> "Useless"
+  in
   if
     is_exit (x1, y1) (room_of_string room).exits
-    || (x1 >= 0 && y1 >= 0 && x1 < 500 && y1 < 500)
+    || ((x1 >= 0 && y1 >= 0 && x1 < 500 && y1 < 500)
+    && next_tile <> "Unwal" && next_tile <> "Build")
   then (
     let trainer = current_trainer st in
     let room' = enter_room room (x1, y1) in
@@ -166,7 +185,7 @@ let rec play st sp =
   with
   | Exit -> clear_graph ()
   | Graphic_failure f -> clear_graph ()
-  | _ -> clear_graph ()
+(* | _ -> clear_graph () *)
 (* | _ -> clear_graph () *)
 (* idk why clear_graph works the best *)
 

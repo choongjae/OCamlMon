@@ -29,6 +29,10 @@ let rocks = Rocks { color = 0x808080; encounters = [ Geodude ] }
 
 let path = Path { color = 0xffbd66; encounters = [] }
 
+let unwal = Unwalkable { color = 0x2ecc71; encounters = [] }
+
+let build = Building { color = 0x2ecc71; encounters = [] }
+
 (**TODO*)
 let exit_to_room e = { name = ""; layout = [| [||] |]; exits = [] }
 
@@ -72,6 +76,8 @@ let town = from_json roomdata "town"
 let cave = from_json roomdata "cave"
 
 let beach = from_json roomdata "beach"
+
+let pokecenter = from_json roomdata "pokecenter"
 
 let room_layout = function
   | "home" -> home.layout
