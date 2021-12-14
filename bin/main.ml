@@ -245,13 +245,34 @@ let battle st sp key =
       update_action st Walk
   | menu -> update_action st (Battle data)
 
-  let talk st room trainer =
-    print_endline "talking";
-    fill_draw_rect (66, 16) 368 84 blue black;
-    fill_draw_rect (70, 20) 360 75 white black;
+  let rec wait_keypress cont = if cont = true then () else let status = wait_next_event [ Key_pressed ] in match status.key with 
+  | 'e' -> wait_keypress true
+  | _ -> wait_keypress false
+
+  let clear_dialogue () = fill_draw_rect (66, 16) 368 84 blue black;
+  fill_draw_rect (70, 20) 360 75 white black
+
+  let talk st room trainer_name =
+    let trainer_name = String.uppercase_ascii trainer_name in
+    (** will need to return updated state with Battle and Battle data*)
+    clear_dialogue ();
     match room with
     | "pokecenter" -> st
-    | "beachgym" -> st
+    | "beachgym" -> set_text_size 40; draw_text (80,70) "MACY: tiktok tiktok";
+    wait_keypress false;
+    clear_dialogue ();
+    draw_text (80, 70) (trainer_name ^ ": . . .");
+    wait_keypress false;
+    clear_dialogue ();
+    draw_text (80, 70) "MACY: A hourglass that doesn't have any sand just causes";
+    draw_text (80, 50) " everyone to waste their time.";
+    wait_keypress false;
+    clear_dialogue ();
+    draw_text (80, 70) "MACY: So don't waste my time.";
+    wait_keypress false;
+    clear_dialogue ();
+    draw_text (80, 70) "<CHANGE STATE AND BATTLE HERE>";
+    st
     | "cavegym" -> st
     | "towngym" -> st
     | _ -> failwith "No NPCs here"
@@ -295,7 +316,7 @@ let rec play st sp =
               play next sp
           | 'e' ->
               play
-                (talk_or_no st (x, y) (current_room st) (current_trainer st))
+                (talk_or_no st (x, y) (current_room st) (current_trainer st).name)
                 sp
           | 'm' ->
               print_endline "Opening Menu";
