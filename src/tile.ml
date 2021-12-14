@@ -13,6 +13,12 @@ type tile =
   | Bushes of t
   | Rocks of t
   | Path of t
+  | Unwalkable of t
+  | Pokecenter of t
+  | Beachgym of t
+  | Cavegym of t
+  | Towngym of t
+  | NPC of t
 
 let grass = Grass { color = 0x2ecc71; encounters = [ Caterpie; Bulbasaur ] }
 
@@ -25,6 +31,18 @@ let bushes = Bushes { color = 0x1c390f; encounters = [ Bulbasaur ] }
 let rocks = Rocks { color = 0x808080; encounters = [ Geodude ] }
 
 let path = Path { color = 0xffbd66; encounters = [] }
+
+let unwalkable = Unwalkable { color = 0x2ecc71; encounters = [] }
+
+let pokecenter = Pokecenter { color = 0x2ecc71; encounters = [] }
+
+let beachgym = Beachgym { color = 0xf1c40f; encounters = [] }
+
+let cavegym = Cavegym { color = 0x808080; encounters = [] }
+
+let towngym = Towngym { color = 0x2ecc71; encounters = [] }
+
+let npc = NPC { color = 0x817c91; encounters = [] }
 
 (**Generates a random number from 0 <= x <= 10 *)
 let generate_randomNum x = Random.int 11
@@ -47,6 +65,13 @@ let type_pokemon = function
   | Bushes _ -> Some (Bulbasaur, string_of_poke Bulbasaur)
   | Rocks _ -> Some (Geodude, string_of_poke Geodude)
   | Path _ -> None
+  | Unwalkable _
+  | Pokecenter _
+  | Beachgym _
+  | Cavegym _
+  | Towngym _
+  | NPC _ ->
+      None
 
 (**Generates a random moves based on the pokemon move list*)
 let random_move l = List.nth l (Random.int (List.length l))
@@ -95,7 +120,9 @@ let extract = function
 (**Generates the random pokemon*)
 let generate_pokemon tileT =
   match tileT with
-  | Path _ -> None
+  | Path _
+  | Unwalkable _ ->
+      None
   | _ ->
       Some
         (let typeP = type_pokemon tileT in
@@ -108,13 +135,19 @@ let generate_pokemon tileT =
            stats = { health = 30; level = l; xp = (l * 10) + Random.int 10 };
          })
 
-let get_color_string = function
+let string_of_tile = function
   | Grass t -> "Grass"
   | Sand t -> "Sand"
   | Water t -> "Water"
   | Bushes t -> "Bushes"
   | Rocks t -> "Rocks"
   | Path t -> "Path"
+  | Unwalkable t -> "Unwal"
+  | Pokecenter _ -> "Pokecenter"
+  | Beachgym _ -> "Beachgym"
+  | Cavegym _ -> "Cavegym"
+  | Towngym _ -> "Towngym"
+  | NPC _ -> "NPC"
 
 let get_color = function
   | Grass t -> t.color
@@ -123,3 +156,9 @@ let get_color = function
   | Bushes t -> t.color
   | Rocks t -> t.color
   | Path t -> t.color
+  | Unwalkable t -> t.color
+  | Pokecenter t -> t.color
+  | Beachgym t -> t.color
+  | Cavegym t -> t.color
+  | Towngym t -> t.color
+  | NPC t -> t.color

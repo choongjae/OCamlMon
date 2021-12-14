@@ -45,11 +45,98 @@ let enter_room room (x, y) =
 (** [new_room_coords x y] is the position of the player of the next room
     after taking an exit. For instance, if the player exits to the right of
     a room, their start position of the next room will be on the left. *)
-let exit_coord (x, y) =
-  if x = -25 then (475, y)
-  else if x = 500 then (0, y)
-  else if y = -25 then (x, 475)
-  else (x, 0)
+let rec exit_coord (x, y) exit_list =
+  match exit_list with
+  | [] -> failwith "error with exits"
+  | h :: t ->
+      let the_exit = h.coordinates in
+      if the_exit = (x, y) then h.player_coord else exit_coord (x, y) t
+
+let draw_pokecenter coord =
+  let pokecenter =
+    make_image
+      ("data/rooms.json" |> Yojson.Basic.from_file
+      |> member "pokecenter_building"
+      |> to_list |> parse_list parse_color |> Array.of_list)
+  in
+  draw_image pokecenter coord
+
+let draw_beachgym coord =
+  let beachgym =
+    make_image
+      ("data/rooms.json" |> Yojson.Basic.from_file
+      |> member "beachgym_building"
+      |> to_list |> parse_list parse_color |> Array.of_list)
+  in
+  draw_image beachgym coord
+
+let draw_cavegym coord =
+  let cavegym =
+    make_image
+      ("data/rooms.json" |> Yojson.Basic.from_file
+     |> member "cavegym_building" |> to_list |> parse_list parse_color
+     |> Array.of_list)
+  in
+  draw_image cavegym coord
+
+let draw_towngym coord =
+  let towngym =
+    make_image
+      ("data/rooms.json" |> Yojson.Basic.from_file
+     |> member "towngym_building" |> to_list |> parse_list parse_color
+     |> Array.of_list)
+  in
+  draw_image towngym coord
+
+let extract = function
+  | None -> failwith "extract error"
+  | Some v -> v
+
+let ipokecenter = ref None
+
+let ibeachgym = ref None
+
+let icavegym = ref None
+
+let itowngym = ref None
+
+let draw_ipokecenter () =
+  if !ipokecenter = None then
+    ipokecenter :=
+      Some
+        (make_image
+           ("data/rooms.json" |> Yojson.Basic.from_file
+          |> member "ipokecenter" |> to_list |> parse_list parse_color
+          |> Array.of_list));
+  draw_image (extract !ipokecenter) (0, 0)
+
+let draw_ibeachgym () =
+  if !ibeachgym = None then
+    ibeachgym :=
+      Some
+        (make_image
+           ("data/rooms.json" |> Yojson.Basic.from_file
+          |> member "ibeachgym" |> to_list |> parse_list parse_color
+          |> Array.of_list));
+  draw_image (extract !ibeachgym) (0, 0)
+
+let draw_icavegym () =
+  if !icavegym = None then
+    icavegym :=
+      Some
+        (make_image
+           ("data/rooms.json" |> Yojson.Basic.from_file |> member "icavegym"
+          |> to_list |> parse_list parse_color |> Array.of_list));
+  draw_image (extract !icavegym) (0, 0)
+
+let draw_itowngym () =
+  if !itowngym = None then
+    itowngym :=
+      Some
+        (make_image
+           ("data/rooms.json" |> Yojson.Basic.from_file |> member "itowngym"
+          |> to_list |> parse_list parse_color |> Array.of_list));
+  draw_image (extract !itowngym) (0, 0)
 
 (** [draw_room arr] draws the tiles of the room array [arr] to the current
     graphics screen *)
@@ -60,7 +147,23 @@ let draw_room st =
       let fill = get_color room_array.(row).(col) in
       draw_square (col * 25, 500 - (25 * row)) fill black
     done
-  done
+  done;
+  for row = 0 to 20 do
+    for col = 0 to 20 do
+      if string_of_tile room_array.(row).(col) = "Pokecenter" then
+        draw_pokecenter (col * 25, 500 - (25 * row));
+      if string_of_tile room_array.(row).(col) = "Beachgym" then
+        draw_beachgym (col * 25, 500 - (25 * row));
+      if string_of_tile room_array.(row).(col) = "Cavegym" then
+        draw_cavegym (col * 25, 500 - (25 * row));
+      if string_of_tile room_array.(row).(col) = "Towngym" then
+        draw_towngym (col * 25, 500 - (25 * row))
+    done
+  done;
+  if current_room st = "pokecenter" then draw_ipokecenter ()
+  else if current_room st = "beachgym" then draw_ibeachgym ()
+  else if current_room st = "cavegym" then draw_icavegym ()
+  else if current_room st = "towngym" then draw_itowngym ()
 
 let encounter st =
   let room = current_room st in
@@ -92,13 +195,23 @@ let encounter st =
     sprite [sp] on the new tile. *)
 let move st (x0, y0) (x1, y1) sp fill =
   let room = current_room st in
+  let next_tile =
+    try string_of_tile (get_tile (x1, y1) room) with
+    | Invalid_argument _ -> "Useless"
+  in
   if
     is_exit (x1, y1) (room_of_string room).exits
     || (x1 >= 0 && y1 >= 0 && x1 < 500 && y1 < 500)
+       && next_tile <> "Unwal" && next_tile <> "Pokecenter"
+       && next_tile <> "Beachgym" && next_tile <> "Cavegym"
+       && next_tile <> "Towngym" && next_tile <> "NPC"
   then (
     let trainer = current_trainer st in
     let room' = enter_room room (x1, y1) in
-    let x1, y1 = if room' = room then (x1, y1) else exit_coord (x1, y1) in
+    let x1, y1 =
+      if room' = room then (x1, y1)
+      else exit_coord (x1, y1) (room_of_string room).exits
+    in
     let st' = update_state room' (x1, y1) Walk trainer in
     let is_new_room = room' <> room in
     (* Need to do save this bool because I cant figure out to only have
@@ -106,9 +219,13 @@ let move st (x0, y0) (x1, y1) sp fill =
        out a better way feel free to change -CJ *)
     moveto (x1, y1);
     auto_synchronize false;
-    if is_new_room then draw_room st';
+    if is_new_room then draw_room st'
+    else if
+      room = "pokecenter" || room = "beachgym" || room = "cavegym"
+      || room = "towngym"
+    then draw_room st'
+    else if not is_new_room then draw_square (x0, y0) fill black;
     draw_image sp (x1, y1);
-    if not is_new_room then draw_square (x0, y0) fill black;
     auto_synchronize true;
     (* match encounter st' with | Some p -> print_endline p.name; st' | None
        -> st' *)
@@ -166,7 +283,7 @@ let rec play st sp =
   with
   | Exit -> clear_graph ()
   | Graphic_failure f -> clear_graph ()
-  | _ -> clear_graph ()
+(* | _ -> clear_graph () *)
 (* | _ -> clear_graph () *)
 (* idk why clear_graph works the best *)
 

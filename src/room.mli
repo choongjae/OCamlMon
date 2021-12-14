@@ -3,6 +3,7 @@ open Tile
 type exit = {
   name : string;
   coordinates : int * int;
+  player_coord : int * int;
 }
 
 type room = {
