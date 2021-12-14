@@ -245,6 +245,27 @@ let battle st sp key =
       update_action st Walk
   | menu -> update_action st (Battle data)
 
+  let talk st room trainer =
+    print_endline "talking";
+    fill_draw_rect (66, 16) 368 84 blue black;
+    fill_draw_rect (70, 20) 360 75 white black;
+    match room with
+    | "pokecenter" -> st
+    | "beachgym" -> st
+    | "cavegym" -> st
+    | "towngym" -> st
+    | _ -> failwith "No NPCs here"
+
+(** [talk_or_no st coord room trainer] is [st] if there is no NPC ahead of
+    coord. Otherwise, it is [st'] where st' is [st] with action [Talk]*)
+let talk_or_no st (x, y) room trainer =
+  try
+    let curr_tile = get_tile (x, y + 25) room in
+    if string_of_tile curr_tile = "NPC" then let st' = (talk st room trainer) in st'
+    else st
+  with
+  | Failure f -> if f = "No" then st else failwith f
+
 (*[menu st] opens up the menu options including bag and team *)
 
 (** [play st sp] is the main game loop for running OCamlMon, where [st]
@@ -272,6 +293,10 @@ let rec play st sp =
           | 'd' ->
               let next = move st (x, y) (x + 25, y) sp tile_color in
               play next sp
+          | 'e' ->
+              play
+                (talk_or_no st (x, y) (current_room st) (current_trainer st))
+                sp
           | 'm' ->
               print_endline "Opening Menu";
               play st sp
@@ -279,7 +304,12 @@ let rec play st sp =
         end
       | Battle p -> play (battle st sp status.key) sp
       | Menu _ -> failwith "Unimplemented"
-      | Talk -> failwith "Unimplemented"
+      | Talk ->
+          (* talk st (current_room st) (current_trainer st); *)
+          play
+            (update_state (current_room st) (current_coord st) Walk
+               (current_trainer st))
+            sp
   with
   | Exit -> clear_graph ()
   | Graphic_failure f -> clear_graph ()
