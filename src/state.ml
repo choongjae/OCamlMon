@@ -8,7 +8,6 @@ type action =
   | Battle of battle_data
   | Walk
   | Menu of menu_data
-  | Talk
 
 type t = {
   room : string;
