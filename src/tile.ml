@@ -14,7 +14,11 @@ type tile =
   | Rocks of t
   | Path of t
   | Unwalkable of t
-  | Building of t
+  | Pokecenter of t
+  | Beachgym of t
+  | Cavegym of t
+  | Towngym of t
+  | NPC of t
 
 let grass = Grass { color = 0x2ecc71; encounters = [ Caterpie; Bulbasaur ] }
 
@@ -30,7 +34,15 @@ let path = Path { color = 0xffbd66; encounters = [] }
 
 let unwalkable = Unwalkable { color = 0x2ecc71; encounters = [] }
 
-let building = Building { color = 0xab8b74; encounters = [] }
+let pokecenter = Pokecenter { color = 0x2ecc71; encounters = [] }
+
+let beachgym = Beachgym { color = 0xf1c40f; encounters = [] }
+
+let cavegym = Cavegym { color = 0x808080; encounters = [] }
+
+let towngym = Towngym { color = 0x2ecc71; encounters = [] }
+
+let npc = NPC { color = 0x817c91; encounters = [] }
 
 (**Generates a random number from 0 <= x <= 10 *)
 let generate_randomNum x = Random.int 11
@@ -53,8 +65,13 @@ let type_pokemon = function
   | Bushes _ -> Some (Bulbasaur, string_of_poke Bulbasaur)
   | Rocks _ -> Some (Geodude, string_of_poke Geodude)
   | Path _ -> None
-  | Unwalkable _ -> None
-  | Building _ -> None
+  | Unwalkable _
+  | Pokecenter _
+  | Beachgym _
+  | Cavegym _
+  | Towngym _
+  | NPC _ ->
+      None
 
 (**Generates a random moves based on the pokemon move list*)
 let random_move l = List.nth l (Random.int (List.length l))
@@ -126,7 +143,11 @@ let string_of_tile = function
   | Rocks t -> "Rocks"
   | Path t -> "Path"
   | Unwalkable t -> "Unwal"
-  | Building t -> "Build"
+  | Pokecenter _ -> "Pokecenter"
+  | Beachgym _ -> "Beachgym"
+  | Cavegym _ -> "Cavegym"
+  | Towngym _ -> "Towngym"
+  | NPC _ -> "NPC"
 
 let get_color = function
   | Grass t -> t.color
@@ -136,4 +157,8 @@ let get_color = function
   | Rocks t -> t.color
   | Path t -> t.color
   | Unwalkable t -> t.color
-  | Building t -> t.color
+  | Pokecenter t -> t.color
+  | Beachgym t -> t.color
+  | Cavegym t -> t.color
+  | Towngym t -> t.color
+  | NPC t -> t.color

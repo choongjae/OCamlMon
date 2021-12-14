@@ -33,7 +33,11 @@ let parse_tile t =
   | "bushes" -> Bushes { color = 0x1c390f; encounters = [ Bulbasaur ] }
   | "rocks" -> Rocks { color = 0x808080; encounters = [ Geodude ] }
   | "unwal" -> Unwalkable { color = 0x2ecc71; encounters = [] }
-  | "build" -> Building { color = 0x2ecc71; encounters = [] }
+  | "poke" -> Pokecenter { color = 0x2ecc71; encounters = [] }
+  | "bgym" -> Beachgym { color = 0x2ecc71; encounters = [] }
+  | "cgym" -> Cavegym { color = 0x808080; encounters = [] }
+  | "tgym" -> Towngym { color = 0x2ecc71; encounters = [] }
+  | "npc" -> NPC { color = 0x817c91; encounters = [] }
   | _ -> Grass { color = 0x2ecc71; encounters = [ Caterpie; Bulbasaur ] }
 
 (** [parse_inner_list f j] is a list of [j] parsed according to [f], where

@@ -32,7 +32,15 @@ let path = Path { color = 0xffbd66; encounters = [] }
 
 let unwal = Unwalkable { color = 0x2ecc71; encounters = [] }
 
-let build = Building { color = 0x2ecc71; encounters = [] }
+let pokecenter = Pokecenter { color = 0x2ecc71; encounters = [] }
+
+let beachgym = Beachgym { color = 0xf1c40f; encounters = [] }
+
+let cavegym = Cavegym { color = 0x808080; encounters = [] }
+
+let towngym = Towngym { color = 0x2ecc71; encounters = [] }
+
+let npc = NPC { color = 0x817c91; encounters = [] }
 
 (**TODO*)
 let exit_to_room e = { name = ""; layout = [| [||] |]; exits = [] }
@@ -83,6 +91,12 @@ let beach = from_json roomdata "beach"
 
 let pokecenter = from_json roomdata "pokecenter"
 
+let beachgym = from_json roomdata "beachgym"
+
+let cavegym = from_json roomdata "cavegym"
+
+let towngym = from_json roomdata "towngym"
+
 let room_layout = function
   | "home" -> home.layout
   | "forest" -> forest.layout
@@ -90,6 +104,9 @@ let room_layout = function
   | "cave" -> cave.layout
   | "beach" -> beach.layout
   | "pokecenter" -> pokecenter.layout
+  | "beachgym" -> beachgym.layout
+  | "cavegym" -> cavegym.layout
+  | "towngym" -> towngym.layout
   | _ -> failwith "No"
 
 (* let get_tile coord room_name = (room_layout room_name).((fst
@@ -104,4 +121,7 @@ let room_of_string = function
   | "cave" -> cave
   | "beach" -> beach
   | "pokecenter" -> pokecenter
+  | "beachgym" -> beachgym
+  | "cavegym" -> cavegym
+  | "towngym" -> towngym
   | _ -> failwith "No"
