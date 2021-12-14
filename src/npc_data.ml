@@ -143,6 +143,22 @@ let cj_battle st room trainer_name =
   update_state room (current_coord st) (Battle battle_data)
     (current_trainer st)
 
+(** [draw_wait ()] draws the ". . . " while pokemon are healing *)
+let draw_wait () =
+  clear_dialogue ();
+  draw_text (80, 70) ".";
+  Unix.sleep 1;
+  draw_text (90, 70) ".";
+  Unix.sleep 1;
+  draw_text (100, 70) ".";
+  Unix.sleep 1
+
+let flush_kp () =
+  while key_pressed () do
+    let _ = read_key () in
+    ()
+  done
+
 let nurse_joy_interaction st =
   let trainer_name = String.uppercase_ascii (current_trainer st).name in
   clear_dialogue ();
@@ -154,18 +170,10 @@ let nurse_joy_interaction st =
   clear_dialogue ();
   draw_text (80, 70) "Give me one second as your pokemon are resting up!";
   wait_keypress false;
-  clear_dialogue ();
-  let is_done = ref false in
-  draw_text (80, 70) ".";
-  Unix.sleep 1;
-  draw_text (90, 70) ".";
-  Unix.sleep 1;
-  draw_text (100, 70) ".";
-  Unix.sleep 1;
+  draw_wait ();
+  flush_kp ();
   clear_dialogue ();
   draw_text (80, 70) "OK! All done. Best of luck with your adventure!!";
-  is_done := true;
-  if !is_done = false then print_endline "loop";
-  if !is_done then wait_keypress false;
+  wait_keypress false;
   update_state (current_room st) (current_coord st) Walk
     (current_trainer st)
