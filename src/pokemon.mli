@@ -7,6 +7,7 @@ type p =
   | Sandshrew
   | Geodude
   | O
+  | Eevee
 
 type pmove =
   | TailWhip
@@ -47,6 +48,8 @@ val sand_moves : pmove list
 val geodude_moves : pmove list
 
 val o_moves : pmove list
+
+val eevee_moves : pmove list
 
 type pokemon_stats = {
   health : int;

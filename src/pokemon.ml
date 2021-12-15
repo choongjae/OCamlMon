@@ -7,6 +7,7 @@ type p =
   | Sandshrew
   | Geodude
   | O
+  | Eevee
 
 type pmove =
   | TailWhip
@@ -51,6 +52,8 @@ let sand_moves = [ Tackle; SandAttack; GyroBall; SandStorm ]
 let geodude_moves = [ Tackle; RockThrow; Earthquake; Explosion ]
 
 let o_moves = [ Encapsulate; Abstract; RaiseFail ]
+
+let eevee_moves = [TailWhip; Scratch; QuickAttack]
 
 type pokemon_stats = {
   health : int;
@@ -113,6 +116,7 @@ let string_of_poke = function
   | Sandshrew -> "Sandshrew"
   | Geodude -> "Geodude"
   | O -> "O"
+  | Eevee -> "Eevee"
 
 let pmove_to_string = function
   | Tackle -> "Tackle"

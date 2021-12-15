@@ -10,6 +10,7 @@ open Pokemon
 open Drawing
 open Battle
 open Menu
+open Npc_data
 
 let mainWorldlist = []
 
@@ -51,46 +52,50 @@ let rec exit_coord (x, y) exit_list =
   | h :: t ->
       let the_exit = h.coordinates in
       if the_exit = (x, y) then h.player_coord else exit_coord (x, y) t
+let extract = function
+| None -> failwith "extract error"
+| Some v -> v
 
-let draw_pokecenter coord =
-  let pokecenter =
-    make_image
+let pokecenter = ref None
+
+let beachgym = ref None
+
+let cavegym = ref None
+
+let towngym = ref None
+
+let draw_pokecenter coord = if !pokecenter = None then
+  pokecenter :=
+    Some
+      (make_image
       ("data/rooms.json" |> Yojson.Basic.from_file
       |> member "pokecenter_building"
-      |> to_list |> parse_list parse_color |> Array.of_list)
-  in
-  draw_image pokecenter coord
+      |> to_list |> parse_list parse_color |> Array.of_list));
+  draw_image (extract !pokecenter) coord
 
-let draw_beachgym coord =
-  let beachgym =
-    make_image
+let draw_beachgym coord = if !beachgym = None then
+  beachgym := Some
+    (make_image
       ("data/rooms.json" |> Yojson.Basic.from_file
       |> member "beachgym_building"
-      |> to_list |> parse_list parse_color |> Array.of_list)
-  in
-  draw_image beachgym coord
+      |> to_list |> parse_list parse_color |> Array.of_list));
+  draw_image (extract !beachgym) coord
 
-let draw_cavegym coord =
-  let cavegym =
-    make_image
+let draw_cavegym coord = if !cavegym = None then
+  cavegym := Some
+    (make_image
       ("data/rooms.json" |> Yojson.Basic.from_file
      |> member "cavegym_building" |> to_list |> parse_list parse_color
-     |> Array.of_list)
-  in
-  draw_image cavegym coord
+     |> Array.of_list));
+  draw_image (extract !cavegym) coord
 
-let draw_towngym coord =
-  let towngym =
-    make_image
+let draw_towngym coord = if !towngym = None then
+  towngym := Some
+    (make_image
       ("data/rooms.json" |> Yojson.Basic.from_file
      |> member "towngym_building" |> to_list |> parse_list parse_color
-     |> Array.of_list)
-  in
-  draw_image towngym coord
-
-let extract = function
-  | None -> failwith "extract error"
-  | Some v -> v
+     |> Array.of_list));
+  draw_image (extract !towngym) coord
 
 let ipokecenter = ref None
 
@@ -138,28 +143,30 @@ let draw_itowngym () =
           |> to_list |> parse_list parse_color |> Array.of_list));
   draw_image (extract !itowngym) (0, 0)
 
+let helper_draw_room st= let room_array = room_layout (current_room st) in
+for row = 0 to 20 do
+  for col = 0 to 20 do
+    let fill = get_color room_array.(row).(col) in
+    draw_square (col * 25, 500 - (25 * row)) fill black
+  done
+done;
+for row = 0 to 10 do
+  for col = 0 to 10 do
+    if string_of_tile room_array.(row).(col) = "Pokecenter" then
+      draw_pokecenter (col * 25, 500 - (25 * row));
+    if string_of_tile room_array.(row).(col) = "Beachgym" then
+      draw_beachgym (col * 25, 500 - (25 * row));
+    if string_of_tile room_array.(row).(col) = "Cavegym" then
+      draw_cavegym (col * 25, 500 - (25 * row));
+    if string_of_tile room_array.(row).(col) = "Towngym" then
+      draw_towngym (col * 25, 500 - (25 * row))
+  done
+done
+
 (** [draw_room arr] draws the tiles of the room array [arr] to the current
     graphics screen *)
 let draw_room st =
-  let room_array = room_layout (current_room st) in
-  for row = 0 to 20 do
-    for col = 0 to 20 do
-      let fill = get_color room_array.(row).(col) in
-      draw_square (col * 25, 500 - (25 * row)) fill black
-    done
-  done;
-  for row = 0 to 20 do
-    for col = 0 to 20 do
-      if string_of_tile room_array.(row).(col) = "Pokecenter" then
-        draw_pokecenter (col * 25, 500 - (25 * row));
-      if string_of_tile room_array.(row).(col) = "Beachgym" then
-        draw_beachgym (col * 25, 500 - (25 * row));
-      if string_of_tile room_array.(row).(col) = "Cavegym" then
-        draw_cavegym (col * 25, 500 - (25 * row));
-      if string_of_tile room_array.(row).(col) = "Towngym" then
-        draw_towngym (col * 25, 500 - (25 * row))
-    done
-  done;
+  helper_draw_room st;
   if current_room st = "pokecenter" then draw_ipokecenter ()
   else if current_room st = "beachgym" then draw_ibeachgym ()
   else if current_room st = "cavegym" then draw_icavegym ()
@@ -219,7 +226,7 @@ let move st (x0, y0) (x1, y1) sp fill =
        out a better way feel free to change -CJ *)
     moveto (x1, y1);
     auto_synchronize false;
-    if is_new_room then draw_room st'
+    if is_new_room then (draw_room st'; flush_kp ())
     else if
       room = "pokecenter" || room = "beachgym" || room = "cavegym"
       || room = "towngym"
@@ -244,6 +251,23 @@ let battle st sp key =
       switch_to_room st sp;
       update_action st Walk
   | menu -> update_action st (Battle data)
+    
+let rec talk_or_no st (x, y) room trainer sp =
+  try
+    let curr_tile = get_tile (x, y + 25) room in
+    if string_of_tile curr_tile = "NPC" then let st' = (talk st room trainer sp) in st'
+    else st
+  with
+  | Failure f -> if f = "No" then st else failwith f
+and talk st room trainer_name sp =
+let trainer_name = String.uppercase_ascii trainer_name in
+(** will need to return updated state with Battle and Battle data*)
+match room with
+| "pokecenter" -> let st' = nurse_joy_interaction st in (draw_room st'; draw_image sp (current_coord st)); st'
+| "beachgym" -> kimmy_battle st room trainer_name
+| "cavegym" -> cj_battle st room trainer_name
+| "towngym" -> sabrina_battle st room trainer_name
+| _ -> failwith "No NPCs here"
 
 (*[menu st] opens up the menu options including bag and team *)
 
@@ -272,6 +296,9 @@ let rec play st sp =
           | 'd' ->
               let next = move st (x, y) (x + 25, y) sp tile_color in
               play next sp
+          | 'e' ->
+              play
+                (talk_or_no st (x, y) (current_room st) (current_trainer st).name sp) sp
           | 'm' ->
               print_endline "Opening Menu";
               play st sp
@@ -279,7 +306,6 @@ let rec play st sp =
         end
       | Battle p -> play (battle st sp status.key) sp
       | Menu _ -> failwith "Unimplemented"
-      | Talk -> failwith "Unimplemented"
   with
   | Exit -> clear_graph ()
   | Graphic_failure f -> clear_graph ()
