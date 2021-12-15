@@ -106,7 +106,7 @@ let kimmy_battle st room trainer_name =
       ("data/npc.json" |> Yojson.Basic.from_file
       |> member "kimmy"
       |> to_list |> parse_list parse_color |> Array.of_list)) in draw_image k_img (150, 150);
-  draw_text (80, 70) "Gym leader Kimmy challenged you to a battle!!";
+  draw_text (80, 70) "Gym leader KIMMY challenged you to a battle!!";
   Unix.sleep (2);
   flush_kp ();
   let battle_data = init_battle (current_trainer st) (snd kimmy) 0xf1c40f in
@@ -135,7 +135,7 @@ let sabrina_battle st room trainer_name =
       ("data/npc.json" |> Yojson.Basic.from_file
       |> member "sabrina"
       |> to_list |> parse_list parse_color |> Array.of_list)) in draw_image k_img (150, 150);
-  draw_text (80, 70) "Gym leader Sabrina challenged you to a battle!!";
+  draw_text (80, 70) "Gym leader SABRINA challenged you to a battle!!";
   Unix.sleep (2);
   flush_kp ();
   let battle_data =
