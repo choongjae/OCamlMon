@@ -139,28 +139,30 @@ let draw_itowngym () =
           |> to_list |> parse_list parse_color |> Array.of_list));
   draw_image (extract !itowngym) (0, 0)
 
+let helper_draw_room st = let room_array = room_layout (current_room st) in
+for row = 0 to 20 do
+  for col = 0 to 20 do
+    let fill = get_color room_array.(row).(col) in
+    draw_square (col * 25, 500 - (25 * row)) fill black
+  done
+done;
+for row = 0 to 20 do
+  for col = 0 to 20 do
+    if string_of_tile room_array.(row).(col) = "Pokecenter" then
+      draw_pokecenter (col * 25, 500 - (25 * row));
+    if string_of_tile room_array.(row).(col) = "Beachgym" then
+      draw_beachgym (col * 25, 500 - (25 * row));
+    if string_of_tile room_array.(row).(col) = "Cavegym" then
+      draw_cavegym (col * 25, 500 - (25 * row));
+    if string_of_tile room_array.(row).(col) = "Towngym" then
+      draw_towngym (col * 25, 500 - (25 * row))
+  done
+done
+
 (** [draw_room arr] draws the tiles of the room array [arr] to the current
     graphics screen *)
 let draw_room st =
-  let room_array = room_layout (current_room st) in
-  for row = 0 to 20 do
-    for col = 0 to 20 do
-      let fill = get_color room_array.(row).(col) in
-      draw_square (col * 25, 500 - (25 * row)) fill black
-    done
-  done;
-  for row = 0 to 20 do
-    for col = 0 to 20 do
-      if string_of_tile room_array.(row).(col) = "Pokecenter" then
-        draw_pokecenter (col * 25, 500 - (25 * row));
-      if string_of_tile room_array.(row).(col) = "Beachgym" then
-        draw_beachgym (col * 25, 500 - (25 * row));
-      if string_of_tile room_array.(row).(col) = "Cavegym" then
-        draw_cavegym (col * 25, 500 - (25 * row));
-      if string_of_tile room_array.(row).(col) = "Towngym" then
-        draw_towngym (col * 25, 500 - (25 * row))
-    done
-  done;
+  helper_draw_room st;
   if current_room st = "pokecenter" then draw_ipokecenter ()
   else if current_room st = "beachgym" then draw_ibeachgym ()
   else if current_room st = "cavegym" then draw_icavegym ()
@@ -220,7 +222,7 @@ let move st (x0, y0) (x1, y1) sp fill =
        out a better way feel free to change -CJ *)
     moveto (x1, y1);
     auto_synchronize false;
-    if is_new_room then draw_room st'
+    if is_new_room then (draw_room st'; flush_kp ())
     else if
       room = "pokecenter" || room = "beachgym" || room = "cavegym"
       || room = "towngym"
