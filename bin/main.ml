@@ -236,7 +236,7 @@ let move st (x0, y0) (x1, y1) sp fill =
     auto_synchronize true;
     (* match encounter st' with | Some p -> print_endline p.name; st' | None
        -> st' *)
-    encounter st')
+    if not is_new_room then encounter st' else st')
   else st
 
 let switch_to_room st sp =
