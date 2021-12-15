@@ -179,7 +179,7 @@ let encounter st =
     match generate_pokemon tile with
     | Some poke ->
         let action =
-          init_battle (current_trainer st) [ poke ] (get_color tile)
+          init_battle (current_trainer st) [ poke ] (get_color tile) false
         in
         update_action st (Battle action)
     | None -> st

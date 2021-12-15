@@ -109,7 +109,7 @@ let kimmy_battle st room trainer_name =
   draw_text (80, 70) "Gym leader KIMMY challenged you to a battle!!";
   Unix.sleep (2);
   flush_kp ();
-  let battle_data = init_battle (current_trainer st) (snd kimmy) 0xf1c40f in
+  let battle_data = init_battle (current_trainer st) (snd kimmy) 0xf1c40f true in
   update_state room (current_coord st) (Battle battle_data)
     (current_trainer st)
 
@@ -122,12 +122,13 @@ let sabrina_battle st room trainer_name =
   draw_text (80, 70) (trainer_name ^ ": ?!");
   wait_keypress false;
   clear_dialogue ();
-  draw_text (80, 70) "SABRINA: All my homies are wary of me...";
+  draw_text (80, 70) "SABRINA: Some times you just gotta pick and choose those";
+  draw_text (80, 50) "you keep around you...";
   wait_keypress false;
   clear_dialogue ();
   draw_text (80, 70)
-    "SABRINA: But isn't life a game of russian roulette anyways";
-  draw_text (80, 50) "hehehehe";
+    "SABRINA: That's what makes life an exciting game of";
+  draw_text (80, 50) "russian roulette hehehehe";
   wait_keypress false;
   battle_transition ();
   clear_dialogue();
@@ -139,7 +140,7 @@ let sabrina_battle st room trainer_name =
   Unix.sleep (2);
   flush_kp ();
   let battle_data =
-    init_battle (current_trainer st) (snd sabrina) 0x6f83a3
+    init_battle (current_trainer st) (snd sabrina) 0x6f83a3 true
   in
   update_state room (current_coord st) (Battle battle_data)
     (current_trainer st)
@@ -174,7 +175,7 @@ let cj_battle st room trainer_name =
   draw_text (80, 30) "AAAAAAACHHOOOOOOO";
   wait_keypress false;
   clear_dialogue ();
-  draw_text (80, 70) "CJ: Gosh all I wanted was some peace and quiet"; 
+  draw_text (80, 70) "CJ: Gosh all I wanted was some peace and quiet."; 
   draw_text (80, 50) "Ok fine, let's do this.";
   wait_keypress false;
   battle_transition ();
@@ -186,7 +187,7 @@ let cj_battle st room trainer_name =
   draw_text (80, 70) "Fighter CJ challenged you to a battle!!";
   Unix.sleep (2);
   flush_kp ();
-  let battle_data = init_battle (current_trainer st) (snd cj) 0x808080 in
+  let battle_data = init_battle (current_trainer st) (snd cj) 0x808080 true in
   update_state room (current_coord st) (Battle battle_data)
     (current_trainer st)
 

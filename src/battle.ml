@@ -210,7 +210,7 @@ let rec next_valid_pokemon = function
   | [] -> failwith "Error: No valid Pokemon"
   | h :: t -> if h.stats.health > 0 then h else next_valid_pokemon t
 
-let init_battle trainer enemy_team bg_color =
+let init_battle trainer enemy_team bg_color npc =
   auto_synchronize false;
   clear_graph ();
   set_color bg_color;
@@ -224,6 +224,7 @@ let init_battle trainer enemy_team bg_color =
   (* DRAWING POKEMON STATUS BARS *)
   fill_draw_rect (250, 150) 250 75 white black;
   fill_draw_rect (0, 375) 250 75 white black;
+  if npc then draw_battle_text "What will you do?" "" else
   draw_battle_text "You run into a wild Pokemon!" "What will you do?";
   auto_synchronize true;
   match enemy_team with
