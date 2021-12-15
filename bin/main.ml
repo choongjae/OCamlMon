@@ -52,46 +52,50 @@ let rec exit_coord (x, y) exit_list =
   | h :: t ->
       let the_exit = h.coordinates in
       if the_exit = (x, y) then h.player_coord else exit_coord (x, y) t
+let extract = function
+| None -> failwith "extract error"
+| Some v -> v
 
-let draw_pokecenter coord =
-  let pokecenter =
-    make_image
+let pokecenter = ref None
+
+let beachgym = ref None
+
+let cavegym = ref None
+
+let towngym = ref None
+
+let draw_pokecenter coord = if !pokecenter = None then
+  pokecenter :=
+    Some
+      (make_image
       ("data/rooms.json" |> Yojson.Basic.from_file
       |> member "pokecenter_building"
-      |> to_list |> parse_list parse_color |> Array.of_list)
-  in
-  draw_image pokecenter coord
+      |> to_list |> parse_list parse_color |> Array.of_list));
+  draw_image (extract !pokecenter) coord
 
-let draw_beachgym coord =
-  let beachgym =
-    make_image
+let draw_beachgym coord = if !beachgym = None then
+  beachgym := Some
+    (make_image
       ("data/rooms.json" |> Yojson.Basic.from_file
       |> member "beachgym_building"
-      |> to_list |> parse_list parse_color |> Array.of_list)
-  in
-  draw_image beachgym coord
+      |> to_list |> parse_list parse_color |> Array.of_list));
+  draw_image (extract !beachgym) coord
 
-let draw_cavegym coord =
-  let cavegym =
-    make_image
+let draw_cavegym coord = if !cavegym = None then
+  cavegym := Some
+    (make_image
       ("data/rooms.json" |> Yojson.Basic.from_file
      |> member "cavegym_building" |> to_list |> parse_list parse_color
-     |> Array.of_list)
-  in
-  draw_image cavegym coord
+     |> Array.of_list));
+  draw_image (extract !cavegym) coord
 
-let draw_towngym coord =
-  let towngym =
-    make_image
+let draw_towngym coord = if !towngym = None then
+  towngym := Some
+    (make_image
       ("data/rooms.json" |> Yojson.Basic.from_file
      |> member "towngym_building" |> to_list |> parse_list parse_color
-     |> Array.of_list)
-  in
-  draw_image towngym coord
-
-let extract = function
-  | None -> failwith "extract error"
-  | Some v -> v
+     |> Array.of_list));
+  draw_image (extract !towngym) coord
 
 let ipokecenter = ref None
 
@@ -139,15 +143,15 @@ let draw_itowngym () =
           |> to_list |> parse_list parse_color |> Array.of_list));
   draw_image (extract !itowngym) (0, 0)
 
-let helper_draw_room st = let room_array = room_layout (current_room st) in
+let helper_draw_room st= let room_array = room_layout (current_room st) in
 for row = 0 to 20 do
   for col = 0 to 20 do
     let fill = get_color room_array.(row).(col) in
     draw_square (col * 25, 500 - (25 * row)) fill black
   done
 done;
-for row = 0 to 20 do
-  for col = 0 to 20 do
+for row = 0 to 10 do
+  for col = 0 to 10 do
     if string_of_tile room_array.(row).(col) = "Pokecenter" then
       draw_pokecenter (col * 25, 500 - (25 * row));
     if string_of_tile room_array.(row).(col) = "Beachgym" then
