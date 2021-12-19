@@ -127,6 +127,7 @@ let generate_pokemon tileT =
       Some
         (let typeP = type_pokemon tileT in
          let l = generate_randomNum () in
+         let l = if l < 5 then 5 else l in
          let move_list = generate_move l (fst (extract typeP)) in
          {
            name = snd (extract typeP);
@@ -137,6 +138,7 @@ let generate_pokemon tileT =
              {
                health = 30;
                maxhealth = 30;
+               speed = 30 + (10 * l);
                level = l;
                xp = (l * 10) + Random.int 10;
              };

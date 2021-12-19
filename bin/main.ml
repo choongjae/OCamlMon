@@ -242,14 +242,15 @@ let move st (x0, y0) (x1, y1) sp fill =
 let switch_to_room st sp =
   draw_room st;
   draw_image sp (current_coord st)
-
+  
 let battle st sp key =
   let b = current_battle st in
   let data = update_battle_menu st (current_trainer st) b key in
   match data.menu with
   | Flee ->
       switch_to_room st sp;
-      update_action st Walk
+      let st' =  update_trainer st {(current_trainer st) with team = data.friend_team; bag = data.items} in
+      update_action st' Walk
   | menu -> update_action st (Battle data)
     
 let rec talk_or_no st (x, y) room trainer sp =

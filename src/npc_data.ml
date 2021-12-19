@@ -32,7 +32,7 @@ let kimmy_squirtle =
     species = Squirtle;
     element = Water;
     moves = squirtle_moves;
-    stats = { maxhealth = 150; health = 150; level = 8; xp = 0 };
+    stats = { maxhealth = 60; health = 60; speed = 90; level = 8; xp = 0 };
   }
 
 let kimmy_sandshrew =
@@ -41,7 +41,7 @@ let kimmy_sandshrew =
     species = Sandshrew;
     element = Ground;
     moves = squirtle_moves;
-    stats = { maxhealth = 200; health = 200; level = 10; xp = 0 };
+    stats = { maxhealth = 80; health = 80; speed = 60; level = 10; xp = 0 };
   }
 
 let kimmy = ("KIMMY", [ kimmy_squirtle; kimmy_sandshrew ])
@@ -52,7 +52,7 @@ let sabrina_eevee =
     species = Eevee;
     element = Normal;
     moves = eevee_moves;
-    stats = { maxhealth = 100; health = 100; level = 6; xp = 0 };
+    stats = { maxhealth = 40; health = 40; speed = 70; level = 6; xp = 0 };
   }
 
 let sabrina_bulbasaur =
@@ -61,7 +61,7 @@ let sabrina_bulbasaur =
     species = Bulbasaur;
     element = Grass;
     moves = bulb_moves;
-    stats = { maxhealth = 200; health = 200; level = 7; xp = 0 };
+    stats = { maxhealth = 50; health = 50; speed = 60; level = 7; xp = 0 };
   }
 
 let sabrina = ("SABRINA", [ sabrina_eevee; sabrina_bulbasaur ])
@@ -72,7 +72,7 @@ let cj_geodude =
     species = Geodude;
     element = Rock;
     moves = geodude_moves;
-    stats = { maxhealth = 150; health = 150; level = 7; xp = 0 };
+    stats = { maxhealth = 50; health = 50; speed = 70; level = 7; xp = 0 };
   }
 
 let cj = ("CJ", [ cj_geodude ])

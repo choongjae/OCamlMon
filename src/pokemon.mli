@@ -1,3 +1,5 @@
+open Yojson.Basic.Util
+
 type species =
   | Pikachu
   | Bulbasaur
@@ -66,6 +68,7 @@ val eevee_moves : move list
 type stats = {
   health : int;
   maxhealth : int;
+  speed : int;
   level : int;
   xp : int;
 }
@@ -87,3 +90,9 @@ val string_of_pokemon : pokemon -> string
 val string_of_element : element -> string
 
 val string_of_move : move -> string
+
+val element_of_string : string -> element
+
+val power_of_move : move -> int
+
+val element_of_move : move -> element

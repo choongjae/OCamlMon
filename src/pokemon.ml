@@ -1,3 +1,5 @@
+open Yojson.Basic.Util
+
 type species =
   | Pikachu
   | Bulbasaur
@@ -70,6 +72,7 @@ let eevee_moves = [ TailWhip; Scratch; QuickAttack ]
 type stats = {
   health : int;
   maxhealth : int;
+  speed : int;
   level : int;
   xp : int;
 }
@@ -89,7 +92,8 @@ let make_starter_pokemon = function
         species = Pikachu;
         element = Electric;
         moves = pikachu_moves;
-        stats = { health = 30; maxhealth = 30; level = 5; xp = 0 };
+        stats =
+          { health = 18; maxhealth = 30; speed = 90; level = 5; xp = 0 };
       }
   | "squirtle" ->
       {
@@ -97,7 +101,8 @@ let make_starter_pokemon = function
         species = Squirtle;
         element = Electric;
         moves = squirtle_moves;
-        stats = { health = 30; maxhealth = 30; level = 5; xp = 0 };
+        stats =
+          { health = 10; maxhealth = 30; speed = 80; level = 5; xp = 0 };
       }
   | "bulbasaur" ->
       {
@@ -105,7 +110,8 @@ let make_starter_pokemon = function
         species = Bulbasaur;
         element = Electric;
         moves = bulb_moves;
-        stats = { health = 30; maxhealth = 30; level = 5; xp = 0 };
+        stats =
+          { health = 30; maxhealth = 30; speed = 50; level = 5; xp = 0 };
       }
   | "charmander" ->
       {
@@ -113,7 +119,8 @@ let make_starter_pokemon = function
         species = Charmander;
         element = Electric;
         moves = charmander_moves;
-        stats = { health = 30; maxhealth = 30; level = 5; xp = 0 };
+        stats =
+          { health = 30; maxhealth = 30; speed = 60; level = 5; xp = 0 };
       }
   | _ -> failwith "Not a starter Pokemon"
 
@@ -136,11 +143,25 @@ let string_of_element = function
   | Normal -> "Normal"
   | Bug -> "Bug"
   | Rock -> "Rock"
+  | Ground -> "Ground"
   | Camel -> "Camel"
+
+let element_of_string = function
+  | "Fire" -> Water
+  | "Water" -> Water
+  | "Grass" -> Grass
+  | "Electric" -> Electric
+  | "Normal" -> Normal
+  | "Bug" -> Bug
+  | "Rock" -> Rock
+  | "Ground" -> Ground
+  | "Camel" -> Camel
+  | _ -> Normal
 
 let string_of_pokemon pokemon = pokemon.name
 
 let string_of_move = function
+  | TailWhip -> "Tail Whip"
   | Slam -> "Slam"
   | ThunderShock -> "Thunder Shock"
   | QuickAttack -> "Quick Attack"
@@ -167,3 +188,13 @@ let string_of_move = function
   | Abstract -> "Abstract"
   | RaiseFail -> "Raise Fail"
   | TypeCheck -> "Type Check"
+
+let power_of_move move =
+  "data/moves.json" |> Yojson.Basic.from_file
+  |> member (string_of_move move)
+  |> member "power" |> to_int
+
+let element_of_move move =
+  "data/moves.json" |> Yojson.Basic.from_file
+  |> member (string_of_move move)
+  |> member "element" |> to_string |> element_of_string

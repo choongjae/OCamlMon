@@ -12,9 +12,12 @@ type battle_menu =
 
 type battle_data = {
   friend : pokemon;
+  friend_team : pokemon list;
   enemy : pokemon;
   enemy_team : pokemon list;
   menu : battle_menu;
+  items : potion * pokeball;
+  is_gym : bool;
 }
 
 type action =
@@ -39,3 +42,5 @@ val init_state : trainer -> t
 val update_state : string -> int * int -> action -> trainer -> t
 
 val update_action : t -> action -> t
+
+val update_trainer : t -> trainer -> t

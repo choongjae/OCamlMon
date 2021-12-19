@@ -12,9 +12,12 @@ type battle_menu =
 
 type battle_data = {
   friend : pokemon;
+  friend_team : pokemon list;
   enemy : pokemon;
   enemy_team : pokemon list;
   menu : battle_menu;
+  items : potion * pokeball;
+  is_gym : bool;
 }
 
 type action =
@@ -49,3 +52,5 @@ let update_state room coord action trainer =
   { room; coords = coord; action; trainer }
 
 let update_action st a = { st with action = a }
+
+let update_trainer st t = { st with trainer = t }
