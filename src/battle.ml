@@ -441,27 +441,45 @@ let use_pokeball st trainer battle menu =
       })
   else go_back_menu battle menu
 
+let update_move_text move source effect =
+  fill_draw_rect (0, 0) 400 100 white black;
+  let effectiveness =
+    match effect with
+    | Super -> "It was super effective!"
+    | Standard -> ""
+    | Less -> "It was not very effective..."
+    | Resistant -> "It had no effect..."
+  in
+  draw_text (30, 60)
+    (source.name ^ " used " ^ string_of_move move ^ "! " ^ effectiveness);
+  Unix.sleep 2;
+  flush_kp ()
+
 (* element multipluer * base power * level / 50 *)
-let calculate_damage move source target =
+let damage_pokemon move source target friend_target =
   let power = float_of_int (power_of_move move) in
+  (* print (string_of_move move); print (string_of_element (element_of_move
+     move)); print (string_of_element target.element); *)
+  let effect = calculate_types (element_of_move move) target.element in
   let multiplier =
-    match calculate_types (element_of_move move) target.element with
+    match effect with
     | Super -> 2.
     | Standard -> 1.
     | Less -> 0.5
     | Resistant -> 0.
   in
-  int_of_float (multiplier *. power) * source.stats.level / 50
-
-let damage_pokemon pokemon damage =
-  let new_stats =
-    { pokemon.stats with health = max (pokemon.stats.health - damage) 0 }
+  let damage =
+    int_of_float (multiplier *. power) * source.stats.level / 50
   in
-  { pokemon with stats = new_stats }
+  let new_stats =
+    { target.stats with health = max (target.stats.health - damage) 0 }
+  in
+  let pokemon = { target with stats = new_stats } in
+  draw_poke_status (if friend_target then (250, 150) else (0, 375)) pokemon;
+  update_move_text move source effect;
+  pokemon
 
 let update_teams battle friend enemy =
-  draw_poke_status (250, 150) friend;
-  draw_poke_status (0, 375) enemy;
   draw_menu_main 1 false;
   {
     battle with
@@ -478,27 +496,21 @@ let process_moves st battle pos =
       (Random.int (List.length battle.enemy.moves))
   in
   if battle.enemy.stats.speed > battle.friend.stats.speed then
-    let enemy_damage =
-      calculate_damage enemy_move battle.enemy battle.friend
+    let friend =
+      damage_pokemon enemy_move battle.enemy battle.friend true
     in
-    let friend = damage_pokemon battle.friend enemy_damage in
     if friend.stats.health = 0 then { battle with menu = Flee }
     else
-      let friend_damage =
-        calculate_damage friend_move friend battle.enemy
-      in
-      let enemy = damage_pokemon battle.enemy friend_damage in
+      let enemy = damage_pokemon friend_move friend battle.enemy false in
       if enemy.stats.health = 0 then { battle with menu = Flee }
       else update_teams battle friend enemy
   else
-    let friend_damage =
-      calculate_damage friend_move battle.friend battle.enemy
+    let enemy =
+      damage_pokemon friend_move battle.friend battle.enemy false
     in
-    let enemy = damage_pokemon battle.enemy friend_damage in
     if enemy.stats.health = 0 then { battle with menu = Flee }
     else
-      let enemy_damage = calculate_damage enemy_move enemy battle.friend in
-      let friend = damage_pokemon battle.friend enemy_damage in
+      let friend = damage_pokemon enemy_move enemy battle.friend true in
       if friend.stats.health = 0 then { battle with menu = Flee }
       else update_teams battle friend enemy
 

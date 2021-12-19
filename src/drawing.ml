@@ -41,3 +41,9 @@ let print_bold s = ANSITerminal.print_string [ Bold ] s
 let print_emph col s = ANSITerminal.print_string [ Bold; Foreground col ] s
 
 let print s = print_endline s
+
+let flush_kp () =
+  while key_pressed () do
+    let _ = read_key () in
+    ()
+  done

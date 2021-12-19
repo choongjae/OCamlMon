@@ -99,7 +99,7 @@ let make_starter_pokemon = function
       {
         name = "Squirtle";
         species = Squirtle;
-        element = Electric;
+        element = Water;
         moves = squirtle_moves;
         stats =
           { health = 10; maxhealth = 30; speed = 80; level = 5; xp = 0 };
@@ -108,7 +108,7 @@ let make_starter_pokemon = function
       {
         name = "Bulbasaur";
         species = Bulbasaur;
-        element = Electric;
+        element = Grass;
         moves = bulb_moves;
         stats =
           { health = 30; maxhealth = 30; speed = 50; level = 5; xp = 0 };
@@ -117,7 +117,7 @@ let make_starter_pokemon = function
       {
         name = "Charmander";
         species = Charmander;
-        element = Electric;
+        element = Fire;
         moves = charmander_moves;
         stats =
           { health = 30; maxhealth = 30; speed = 60; level = 5; xp = 0 };
@@ -147,7 +147,7 @@ let string_of_element = function
   | Camel -> "Camel"
 
 let element_of_string = function
-  | "Fire" -> Water
+  | "Fire" -> Fire
   | "Water" -> Water
   | "Grass" -> Grass
   | "Electric" -> Electric
@@ -157,6 +157,17 @@ let element_of_string = function
   | "Ground" -> Ground
   | "Camel" -> Camel
   | _ -> Normal
+
+let element_of_species = function
+  | Pikachu -> Electric
+  | Bulbasaur -> Grass
+  | Squirtle -> Water
+  | Charmander -> Fire
+  | Caterpie -> Bug
+  | Sandshrew -> Ground
+  | Geodude -> Rock
+  | O -> Camel
+  | Eevee -> Normal
 
 let string_of_pokemon pokemon = pokemon.name
 

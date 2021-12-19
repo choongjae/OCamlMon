@@ -20,12 +20,6 @@ let battle_transition () =
     Unix.sleepf 0.01
   done
 
-let flush_kp () =
-  while key_pressed () do
-    let _ = read_key () in
-    ()
-  done
-
 let kimmy_squirtle =
   {
     name = "Squirtle";

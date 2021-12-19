@@ -129,10 +129,11 @@ let generate_pokemon tileT =
          let l = generate_randomNum () in
          let l = if l < 5 then 5 else l in
          let move_list = generate_move l (fst (extract typeP)) in
+         let elt = element_of_species (fst (extract typeP)) in
          {
            name = snd (extract typeP);
            species = fst (extract typeP);
-           element = Normal;
+           element = elt;
            moves = move_list;
            stats =
              {

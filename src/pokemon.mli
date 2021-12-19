@@ -87,6 +87,8 @@ val string_of_species : species -> string
 
 val string_of_pokemon : pokemon -> string
 
+val element_of_species : species -> element
+
 val string_of_element : element -> string
 
 val string_of_move : move -> string
