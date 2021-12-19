@@ -9,6 +9,7 @@ type room_id = string
 type exit = {
   name : string;
   coordinates : int * int;
+  player_coord : int * int; (*inital coordinate of player in new room*)
 }
 
 type room = {
@@ -29,6 +30,18 @@ let rocks = Rocks { color = 0x808080; encounters = [ Geodude ] }
 
 let path = Path { color = 0xffbd66; encounters = [] }
 
+let unwal = Unwalkable { color = 0x2ecc71; encounters = [] }
+
+let pokecenter = Pokecenter { color = 0x2ecc71; encounters = [] }
+
+let beachgym = Beachgym { color = 0xf1c40f; encounters = [] }
+
+let cavegym = Cavegym { color = 0x808080; encounters = [] }
+
+let towngym = Towngym { color = 0x2ecc71; encounters = [] }
+
+let npc = NPC { color = 0x817c91; encounters = [] }
+
 (**TODO*)
 let exit_to_room e = { name = ""; layout = [| [||] |]; exits = [] }
 
@@ -40,10 +53,13 @@ let roomdata = "data/rooms.json" |> Yojson.Basic.from_file
     a room *)
 let exit_record exit =
   let exitcoords = exit |> member "coordinates" in
+  let playercoords = exit |> member "player_coord" in
   {
     name = exit |> member "name" |> to_string;
     coordinates =
       (index 0 exitcoords |> to_int, index 1 exitcoords |> to_int);
+    player_coord =
+      (index 0 playercoords |> to_int, index 1 playercoords |> to_int);
   }
 
 (** [parse_exits r] is the list of exit (records) corresponding to the room
@@ -73,12 +89,24 @@ let cave = from_json roomdata "cave"
 
 let beach = from_json roomdata "beach"
 
+let pokecenter = from_json roomdata "pokecenter"
+
+let beachgym = from_json roomdata "beachgym"
+
+let cavegym = from_json roomdata "cavegym"
+
+let towngym = from_json roomdata "towngym"
+
 let room_layout = function
   | "home" -> home.layout
   | "forest" -> forest.layout
   | "town" -> town.layout
   | "cave" -> cave.layout
   | "beach" -> beach.layout
+  | "pokecenter" -> pokecenter.layout
+  | "beachgym" -> beachgym.layout
+  | "cavegym" -> cavegym.layout
+  | "towngym" -> towngym.layout
   | _ -> failwith "No"
 
 (* let get_tile coord room_name = (room_layout room_name).((fst
@@ -92,4 +120,8 @@ let room_of_string = function
   | "town" -> town
   | "cave" -> cave
   | "beach" -> beach
+  | "pokecenter" -> pokecenter
+  | "beachgym" -> beachgym
+  | "cavegym" -> cavegym
+  | "towngym" -> towngym
   | _ -> failwith "No"

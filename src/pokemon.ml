@@ -7,6 +7,7 @@ type species =
   | Sandshrew
   | Geodude
   | O
+  | Eevee
 
 type element =
   | Fire
@@ -14,11 +15,13 @@ type element =
   | Grass
   | Electric
   | Normal
+  | Ground
   | Bug
   | Rock
   | Camel
 
 type move =
+  | TailWhip
   | Slam
   | ThunderShock
   | QuickAttack
@@ -61,6 +64,8 @@ let sand_moves = [ Tackle ]
 let geodude_moves = [ Tackle; RockThrow; Earthquake; Explosion ]
 
 let o_moves = [ Encapsulate; Abstract; RaiseFail ]
+
+let eevee_moves = [ TailWhip; Scratch; QuickAttack ]
 
 type stats = {
   health : int;
@@ -121,6 +126,7 @@ let string_of_species = function
   | Sandshrew -> "Sandshrew"
   | Geodude -> "Geodude"
   | O -> "O"
+  | Eevee -> "Eevee"
 
 let string_of_element = function
   | Fire -> "Fire"

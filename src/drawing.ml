@@ -27,7 +27,7 @@ let fill_draw_rect (x, y) w h fill border =
 let draw_square (x, y) fill border =
   set_color fill;
   fill_rect (x, y) 25 25;
-  set_color 0x06A10E;
+  set_color border;
   draw_rect (x, y) 25 25
 
 let draw_circle (x, y) r = draw_circle x y r

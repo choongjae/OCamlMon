@@ -7,6 +7,7 @@ type species =
   | Sandshrew
   | Geodude
   | O
+  | Eevee
 
 type element =
   | Fire
@@ -14,11 +15,13 @@ type element =
   | Grass
   | Electric
   | Normal
+  | Ground
   | Bug
   | Rock
   | Camel
 
 type move =
+  | TailWhip
   | Slam
   | ThunderShock
   | QuickAttack
@@ -57,6 +60,8 @@ val sand_moves : move list
 val geodude_moves : move list
 
 val o_moves : move list
+
+val eevee_moves : move list
 
 type stats = {
   health : int;

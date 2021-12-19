@@ -12,6 +12,12 @@ type tile =
   | Bushes of t
   | Rocks of t
   | Path of t
+  | Unwalkable of t
+  | Pokecenter of t
+  | Beachgym of t
+  | Cavegym of t
+  | Towngym of t
+  | NPC of t
 
 val generate_encounter : unit -> bool
 (** [generate_encounter x] is whether or not stepping on a tile will create
@@ -26,4 +32,4 @@ val generate_pokemon : tile -> pokemon option
 
 val get_color : tile -> int
 
-val get_color_string : tile -> string
+val string_of_tile : tile -> string

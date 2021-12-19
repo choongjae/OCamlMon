@@ -233,7 +233,7 @@ let draw_poke_status (x, y) pokemon =
     10;
   draw_rect (x + 75, y + 25) 100 10
 
-let init_battle trainer enemy_team bg_color =
+let init_battle trainer enemy_team bg_color npc =
   let data =
     match enemy_team with
     | h :: t ->
@@ -262,7 +262,8 @@ let init_battle trainer enemy_team bg_color =
   draw_poke_status (250, 150) data.friend;
   fill_draw_rect (0, 375) 250 75 white black;
   draw_poke_status (0, 375) data.friend;
-  draw_battle_text "You run into a wild Pokemon!" "What will you do?";
+  if npc then draw_battle_text "What will you do?" ""
+  else draw_battle_text "You run into a wild Pokemon!" "What will you do?";
   auto_synchronize true;
   data
 
